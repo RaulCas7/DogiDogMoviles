@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="179dp"
+        android:layout_height="116dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/bordercollie" />
+
+    <TextView
+        android:id="@+id/txtInicioSesion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Inicio sesión"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/edtUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
+        android:hint="Usuario"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/redondeo"
+        android:padding="16dp"
+        android:layout_below="@id/txtInicioSesion"
+        />
+
+    <EditText
+        android:id="@+id/edtContra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtUsuario"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:hint="Contraseña"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:inputType="textPassword"
+        android:background="@drawable/redondeo"
+        android:padding="16dp"
+        />
+
+    <ImageButton
+        android:id="@+id/btnMostrarContra"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignEnd="@id/edtContra"
+        android:layout_alignTop="@id/edtContra"
+        android:src="@drawable/visibility_off_24"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="Mostrar contraseña"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/txtOlvidarContra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtContra"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="¿Olvidó su contraseña?"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textIsSelectable="true"
+        android:textStyle="bold"
+        />
+
+    <Button
+        android:id="@+id/btnRegistrarse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtOlvidarContra"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
+        android:text="Iniciar Sesión"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:backgroundTint="@color/primario"/>
+
+    <Button
+        android:id="@+id/btnInicioGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnRegistrarse"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="30dp"
+        android:text="Continuar con Google"
+        android:textSize="18sp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/primario"
+        android:drawableLeft="@drawable/google_resized_resized"
+        />
+    <View
+        android:id="@+id/lineSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/btnInicioGoogle"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/txtSinMascota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lineSeparator"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="¿Pensando en tener su primer amigo perruno?"
+        android:textSize="16sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        />
+
+    <Button
+        android:id="@+id/btnInicioSesión"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtSinMascota"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:text="Registrarse"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+
+        android:backgroundTint="@color/primario"/>
+
+
+
+</RelativeLayout>

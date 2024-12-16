@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
+        <!-- Otras configuraciones de estilo -->
+        <item name="colorPrimary">@color/primario</item>
+
+
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/white</item>
+        <item name="itemIconTint">@color/primario</item>
+        <item name="itemTextColor">@color/primario</item>
+        <item name="itemRippleColor">@color/black</item>
+    </style>
+
+</resources>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".mascotas.AnadirMascotaFragment">
+
+    <TextView
+        android:id="@+id/txtNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Nombre:"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/edtNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:hint="Mascota"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:inputType="text"
+        android:background="@drawable/redondeo"
+        android:padding="16dp"
+        android:layout_below="@id/txtNombre"
+        />
+
+    <TextView
+        android:id="@+id/txtFechaNac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Nacimiento:"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_below="@id/edtNombre"
+        />
+
+    <EditText
+        android:id="@+id/edtFechaNac"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:hint="01-01-9999"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:inputType="date"
+        android:background="@drawable/redondeo"
+        android:padding="16dp"
+        android:layout_below="@id/txtFechaNac"
+        />
+
+    <TextView
+        android:id="@+id/txtRaza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Raza:"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_below="@id/edtFechaNac"
+        />
+
+    <Spinner
+        android:id="@+id/edtRaza"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:background="@drawable/redondeo"
+        android:padding="16dp"
+        android:layout_below="@id/txtRaza"
+        />
+
+    <TextView
+        android:id="@+id/txtPeso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Peso (KG):"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_below="@id/edtRaza"
+        />
+
+    <EditText
+        android:id="@+id/edtPeso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:hint="0 kg"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:inputType="numberDecimal"
+        android:background="@drawable/redondeo"
+        android:padding="16dp"
+        android:layout_below="@id/txtPeso"
+        />
+
+    <TextView
+        android:id="@+id/txtFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Imagen:"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_below="@id/edtPeso"
+        />
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="179dp"
+        android:layout_height="116dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/bordercollie"
+        android:layout_below="@id/edtPeso"/>
+
+    <ImageButton
+        android:id="@+id/change_foto"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/edtPeso"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/txtFoto"
+        android:src="@drawable/baseline_add_a_photo_24" />
+
+    <TextView
+        android:id="@+id/txtSexo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Sexo:"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_below="@id/edtPeso"
+        android:layout_toEndOf="@id/imgLogo"
+        />
+
+    <ImageView
+        android:id="@+id/imgSexo"
+        android:layout_width="179dp"
+        android:layout_height="116dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/baseline_female_24"
+        android:layout_below="@id/edtPeso"
+        android:layout_toEndOf="@id/imgLogo"/>
+
+    <ImageButton
+        android:id="@+id/change_sexo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/edtPeso"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/txtFoto"
+        android:layout_toEndOf="@id/txtSexo"
+        android:src="@drawable/baseline_change_circle_24" />
+
+    <Button
+        android:id="@+id/btnInicioSesión"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgLogo"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:text="Añadir a "
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:backgroundTint="@color/primario"/>
+</RelativeLayout>

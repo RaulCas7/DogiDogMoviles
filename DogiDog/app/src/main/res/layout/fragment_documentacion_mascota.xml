@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Lista de Documentos Guardados -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/tv_saved_documents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notas y Documentos"
+            android:textColor="@color/primario"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_documents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <!-- Botón flotante para añadir nueva documentación -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_document"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/primario"
+        android:contentDescription="Añadir documentación"
+        app:tint="@android:color/white"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <!-- Contenedor expandible para añadir documentación -->
+    <LinearLayout
+        android:id="@+id/ll_new_document_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_above="@id/fab_add_document"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp">
+
+        <EditText
+            android:id="@+id/et_document_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Título de la documentación"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/et_document_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripción"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:minLines="3"
+            android:maxLines="6" />
+
+        <Button
+            android:id="@+id/btn_attach_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjuntar Archivo" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Guardar" />
+    </LinearLayout>
+</RelativeLayout>

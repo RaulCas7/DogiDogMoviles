@@ -1,0 +1,60 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MascotasFragment">
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:spanCount="1"
+        tools:listitem="@layout/fragment_mascotas" />
+
+    <!-- Botón flotante principal -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Botón flotante principal"
+        android:src="@android:drawable/ic_input_add"
+        android:backgroundTint="@color/primario"
+        app:tint="@android:color/white" />
+
+    <!-- Botón flotante secundario: Añadir -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        android:contentDescription="Añadir"
+        android:src="@android:drawable/ic_menu_add"
+        android:backgroundTint="@color/primario"
+        app:tint="@android:color/white" />
+
+    <!-- Botón flotante secundario: Eliminar -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="176dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        android:contentDescription="Eliminar"
+        android:src="@android:drawable/ic_menu_delete"
+        android:backgroundTint="@color/design_default_color_error"
+        app:tint="@android:color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

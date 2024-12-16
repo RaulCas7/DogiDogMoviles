@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@drawable/item_background"
+    android:elevation="4dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Icono de tipo de documento -->
+    <ImageView
+        android:id="@+id/iv_document_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/logo"
+        android:contentDescription="Icono de documento"
+        android:layout_marginEnd="12dp" />
+
+    <!-- Contenedor del contenido del item -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Título y botón de eliminar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Título"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
+
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Eliminar"
+                android:layout_marginStart="8dp"
+                app:tint="@color/primario" />
+        </LinearLayout>
+
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción"
+            android:textSize="14sp"
+            android:textColor="@color/gris"
+            android:layout_marginTop="4dp" />
+
+        <!-- Contenedor del adjunto -->
+        <LinearLayout
+            android:id="@+id/ll_attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_clip_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_attach_file_24"
+                android:contentDescription="Icono de clip"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/primario" />
+
+            <TextView
+                android:id="@+id/tv_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Archivo adjunto: nombre_archivo.pdf"
+                android:textSize="12sp"
+                android:textColor="@color/primario" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

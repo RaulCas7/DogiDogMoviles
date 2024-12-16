@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".mascotas.AnadirMascotaFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardEdad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        android:layout_marginStart="35dp">
+
+        <RelativeLayout
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtEdad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="EDAD"
+                android:textSize="25sp"
+                android:textColor="@color/primario"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/txtNumEdad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtEdad"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="2 años"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/azulOscuro"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPeso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="35dp">
+
+        <RelativeLayout
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtPeso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="PESO"
+                android:textSize="25sp"
+                android:textColor="@color/primario"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/txtNumPeso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPeso"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="20 KG"
+
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/azulOscuro"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"/>
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardVacuna"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/cardEdad">
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtProxVacuna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Vacuna"
+                android:textSize="25sp"
+                android:textColor="@color/primario"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/txtFechaVacuna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtProxVacuna"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="29-10-2024"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/azulOscuro"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardDesparasitacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/cardVacuna">
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtDesparasitacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Desparasitación"
+                android:textSize="25sp"
+                android:textColor="@color/primario"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/txtFechaDesparasitacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtDesparasitacion"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="29-10-2024"
+
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/azulOscuro"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"/>
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPienso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/cardDesparasitacion">
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtPienso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Pienso"
+                android:textSize="25sp"
+                android:textColor="@color/primario"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/txtMarcaPienso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPienso"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Hill's Mobility"
+
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/azulOscuro"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

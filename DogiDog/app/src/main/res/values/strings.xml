@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DogiDog</string>
+    <string name="prefs_file">key_sesion</string>
+    <string name="title_activity_principal">PrincipalActivity</string>
+    <string name="titulo_mascotas">Mascotas</string>
+    <string name="titulo_mapa">Mapa</string>
+    <string name="titulo_recordatorios">Recordatorios</string>
+    <string name="titulo_logros">Logros</string>
+    <string name="titulo_dogibot">Dogibot</string>
+    <string name="api_key">AIzaSyBLhY2MeljvnCLGRfLbc_R24l73oGIaz8U</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

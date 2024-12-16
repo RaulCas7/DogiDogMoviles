@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".mascotas.MascotaPrincipalFragment">
+
+
+    <ImageView
+        android:id="@+id/imgFoto"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/bordercollie"
+        />
+
+    <TextView
+        android:id="@+id/txtNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Saiya"
+        android:textSize="30sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/imgFoto"
+        android:layout_alignBottom="@id/imgFoto"
+        />
+
+    <TextView
+        android:id="@+id/txtRaza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Border Collie"
+        android:textSize="20sp"
+        android:textColor="@color/primario"
+        android:textStyle="bold"
+        android:layout_alignStart="@+id/txtNombre"
+        android:layout_alignBottom="@id/imgFoto"
+        />
+
+    <ImageView
+        android:id="@+id/imgSexo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/baseline_female_24"
+        />
+
+
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgFoto"
+        >
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkableBehavior="none"
+            >
+
+            <!-- Aquí puedes agregar los chips individualmente o inflarlos programáticamente -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/fInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Info" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/fFotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Fotos" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/fPeso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Peso" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/fAlertas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Alertas" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/fDocumentacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Documentacion" />
+
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+
+
+
+
+
+</RelativeLayout>
