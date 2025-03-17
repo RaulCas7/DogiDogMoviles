@@ -1,152 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center"
+    android:background="@color/white">
 
+    <!-- Logo -->
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="179dp"
-        android:layout_height="116dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:contentDescription="Logo"
         android:src="@drawable/bordercollie" />
 
+    <!-- Título -->
     <TextView
         android:id="@+id/txtInicioSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgLogo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Inicio sesión"
-        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:text="Iniciar Sesión"
+        android:textSize="22sp"
         android:textColor="@color/primario"
         android:textStyle="bold"
-        />
+        android:gravity="center"/>
 
+    <!-- Campo Usuario -->
     <EditText
-        android:id="@+id/edtUsuario"
+        android:id="@+id/edtEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Usuario"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
         android:background="@drawable/redondeo"
-        android:padding="16dp"
-        android:layout_below="@id/txtInicioSesion"
-        />
+        android:paddingHorizontal="16dp"/>
 
-    <EditText
-        android:id="@+id/edtContra"
+    <!-- Campo Contraseña -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edtUsuario"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Contraseña"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:inputType="textPassword"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        />
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:background="@drawable/redondeo">
 
-    <ImageButton
-        android:id="@+id/btnMostrarContra"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignEnd="@id/edtContra"
-        android:layout_alignTop="@id/edtContra"
-        android:src="@drawable/visibility_off_24"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="Mostrar contraseña"
-        android:layout_marginTop="5dp"/>
+        <EditText
+            android:id="@+id/edtContra"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Contraseña"
+            android:background="@drawable/redondeo"
+            android:inputType="textPassword"
+            android:paddingHorizontal="16dp"/>
 
+        <ImageButton
+            android:id="@+id/btnMostrarContra"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/visibility_off_24"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Mostrar contraseña"/>
+    </LinearLayout>
+
+    <!-- Olvidó su contraseña -->
     <TextView
         android:id="@+id/txtOlvidarContra"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtContra"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="¿Olvidó su contraseña?"
-        android:textSize="20sp"
+        android:layout_marginTop="8dp"
+        android:text="¿Olvidaste tu contraseña?"
+        android:textSize="14sp"
         android:textColor="@color/primario"
-        android:textIsSelectable="true"
         android:textStyle="bold"
-        />
+        android:gravity="center"/>
 
+    <!-- Botón Iniciar Sesión -->
     <Button
-        android:id="@+id/btnRegistrarse"
+        android:id="@+id/btnInicioSesion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtOlvidarContra"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="30dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
         android:text="Iniciar Sesión"
+        android:textSize="16sp"
         android:textAllCaps="false"
-        android:textSize="18sp"
-        android:backgroundTint="@color/primario"/>
+        android:backgroundTint="@color/primario"
+        android:textColor="@color/white"/>
 
+    <!-- Botón Google -->
     <Button
         android:id="@+id/btnInicioGoogle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnRegistrarse"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="30dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:text="Continuar con Google"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:textAllCaps="false"
         android:backgroundTint="@color/white"
         android:textColor="@color/primario"
-        android:drawableLeft="@drawable/google_resized_resized"
-        />
+        android:drawableLeft="@drawable/google_resized_resized"/>
+
+    <!-- Línea separadora -->
     <View
-        android:id="@+id/lineSeparator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/btnInicioGoogle"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_marginTop="16dp"
+        android:background="@android:color/darker_gray"/>
 
+    <!-- Texto y botón de registro -->
     <TextView
         android:id="@+id/txtSinMascota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lineSeparator"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="¿Pensando en tener su primer amigo perruno?"
-        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:text="¿Aún no tienes cuenta?"
+        android:textSize="14sp"
         android:textColor="@color/primario"
         android:textStyle="bold"
-        />
+        android:gravity="center"/>
 
     <Button
-        android:id="@+id/btnInicioSesión"
+        android:id="@+id/btnRegistrarse"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtSinMascota"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:text="Registrarse"
+        android:textSize="16sp"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:backgroundTint="@color/primario"
+        android:textColor="@color/white"/>
 
-        android:backgroundTint="@color/primario"/>
-
-
-
-</RelativeLayout>
+</LinearLayout>

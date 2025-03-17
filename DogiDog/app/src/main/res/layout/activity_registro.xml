@@ -1,151 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center"
+    android:background="@color/white">
 
+    <!-- Logo -->
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="179dp"
-        android:layout_height="116dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/bordercollie" />
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:src="@drawable/bordercollie"
+        android:contentDescription="Logo" />
 
+    <!-- Título -->
     <TextView
         android:id="@+id/txtRegistrarse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgLogo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Crear cuenta"
-        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:text="Crear Cuenta"
+        android:textSize="22sp"
         android:textColor="@color/primario"
         android:textStyle="bold"
-        />
+        android:gravity="center"/>
 
+    <!-- Campo Email -->
+    <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/redondeo"
+        android:paddingHorizontal="16dp"/>
+
+    <!-- Campo Usuario -->
     <EditText
         android:id="@+id/edtUsuario"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Usuario"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:inputType="textEmailAddress"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:hint="Nombre de usuario"
+        android:inputType="text"
         android:background="@drawable/redondeo"
-        android:padding="16dp"
-        android:layout_below="@id/txtRegistrarse"
-        />
+        android:paddingHorizontal="16dp"/>
 
-    <EditText
-        android:id="@+id/edtContra"
+    <!-- Campo Contraseña -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edtUsuario"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Contraseña"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:inputType="textPassword"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        />
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:background="@drawable/redondeo">
 
-    <EditText
-        android:id="@+id/edtContraRepetir"
+        <EditText
+            android:id="@+id/edtContra"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Contraseña"
+            android:background="@drawable/redondeo"
+            android:inputType="textPassword"
+            android:paddingHorizontal="16dp"/>
+
+        <ImageButton
+            android:id="@+id/btnMostrarContra"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/visibility_off_24"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Mostrar contraseña"/>
+    </LinearLayout>
+
+    <!-- Campo Repetir Contraseña -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edtContra"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Repita la contraseña"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:inputType="textPassword"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        />
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:background="@drawable/redondeo">
 
-    <ImageButton
-        android:id="@+id/btnMostrarContra"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignEnd="@id/edtContra"
-        android:layout_alignTop="@id/edtContra"
-        android:src="@drawable/visibility_off_24"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="Mostrar contraseña"
-        android:layout_marginTop="5dp"/>
+        <EditText
+            android:id="@+id/edtContraRepetir"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Repetir contraseña"
+            android:background="@drawable/redondeo"
+            android:inputType="textPassword"
+            android:paddingHorizontal="16dp"/>
 
-    <ImageButton
-        android:id="@+id/btnMostrarContraRepetida"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignEnd="@id/edtContraRepetir"
-        android:layout_alignTop="@id/edtContraRepetir"
-        android:src="@drawable/visibility_off_24"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="Mostrar contraseña"
-        android:layout_marginTop="5dp"/>
+        <ImageButton
+            android:id="@+id/btnMostrarContraRepetida"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/visibility_off_24"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Mostrar contraseña"/>
+    </LinearLayout>
 
+    <!-- Botón Registrarse -->
     <Button
         android:id="@+id/btnRegistrarse"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edtContraRepetir"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="30dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
         android:text="Registrarse"
+        android:textSize="16sp"
         android:textAllCaps="false"
-        android:textSize="18sp"
-        android:backgroundTint="@color/primario"/>
+        android:backgroundTint="@color/primario"
+        android:textColor="@color/white"/>
 
+    <!-- Línea separadora -->
     <View
-        android:id="@+id/lineSeparator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/btnRegistrarse"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_marginTop="16dp"
+        android:background="@android:color/darker_gray"/>
 
+    <!-- Texto y botón de inicio de sesión -->
     <TextView
         android:id="@+id/txtSinMascota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lineSeparator"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="¿Dispone de una cuenta?"
-        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:text="¿Ya tienes una cuenta?"
+        android:textSize="14sp"
         android:textColor="@color/primario"
         android:textStyle="bold"
-        />
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/btnInicioSesion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtSinMascota"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:text="Inicio sesión"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:text="Iniciar Sesión"
+        android:textSize="16sp"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:backgroundTint="@color/primario"
+        android:textColor="@color/white"/>
 
-        android:backgroundTint="@color/primario"/>
-
-
-
-</RelativeLayout>
+</LinearLayout>

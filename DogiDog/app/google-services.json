@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "669111898592",
+    "project_id": "dogidog-df997",
+    "storage_bucket": "dogidog-df997.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669111898592:android:49583a2f5f5068a4541b85",
+        "android_client_info": {
+          "package_name": "com.example.dogiDog"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJemrdMtQqELSGa1lzldGLnWBlXsbdGhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669111898592:android:cf66fe3fe903d9a9541b85",
+        "android_client_info": {
+          "package_name": "com.example.dogidog"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJemrdMtQqELSGa1lzldGLnWBlXsbdGhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
