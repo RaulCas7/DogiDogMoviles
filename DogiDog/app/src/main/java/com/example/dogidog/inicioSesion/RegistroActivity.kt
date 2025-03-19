@@ -1,4 +1,4 @@
-package com.example.dogidog
+package com.example.dogidog.inicioSesion
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Usuario
-import com.example.dogidog.databinding.ActivityMainBinding
 import com.example.dogidog.databinding.ActivityRegistroBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -52,7 +51,7 @@ class RegistroActivity : AppCompatActivity() {
 
             val contraMD5 = convertirAMD5(contra)
 
-            val nuevoUsuario = Usuario(usuario, email, contraMD5, 0) // contadorPreguntas = 0 por defecto
+            val nuevoUsuario = Usuario(-1,usuario, email, contraMD5, 0) // contadorPreguntas = 0 por defecto
 
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/dogidog/") // Dirección del backend

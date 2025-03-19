@@ -39,15 +39,15 @@
             android:value="@string/api_key" />
 
         <activity
-            android:name=".PantallaPrincipalActivity"
+            android:name=".principal.PantallaPrincipalActivity"
             android:exported="false" />
 
         <activity
-            android:name=".RegistroActivity"
+            android:name=".inicioSesion.RegistroActivity"
             android:exported="false" />
 
         <activity
-            android:name=".InicioSesionActivity"
+            android:name=".inicioSesion.InicioSesionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

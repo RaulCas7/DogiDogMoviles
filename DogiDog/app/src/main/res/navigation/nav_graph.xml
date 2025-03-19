@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph">
+
+    <fragment
+        android:id="@+id/mascotasFragmentDirections"
+        android:name="com.example.dogidog.principal.MascotasFragment"
+        android:label="Mascotas">
+        <action
+            android:id="@+id/action_mascotasFragment_to_detalleMascotaFragment"
+            app:destination="@id/detalleMascotaFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/detalleMascotaFragment"
+        android:name="com.example.dogidog.mascotas.MascotaPrincipalFragment"
+        android:label="Detalle Mascota">
+        <argument
+            android:name="mascota"
+            app:argType="com.example.dogidog.dataModels.Mascota" />
+    </fragment>
+</navigation>

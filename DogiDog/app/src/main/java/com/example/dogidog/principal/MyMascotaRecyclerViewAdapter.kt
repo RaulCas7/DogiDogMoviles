@@ -1,13 +1,13 @@
-package com.example.dogidog
+package com.example.dogidog.principal
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
 import com.example.dogidog.placeholder.PlaceholderContent.PlaceholderItem
-import com.example.dogidog.databinding.FragmentMascotasBinding
+import com.example.dogidog.databinding.FragmentMascotasListBinding
+import com.example.dogidog.databinding.ItemMascotaBinding
 
 /**
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
@@ -20,7 +20,7 @@ class MyMascotaRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(
-            FragmentMascotasBinding.inflate(
+            ItemMascotaBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -36,7 +36,7 @@ class MyMascotaRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentMascotasBinding) :
+    inner class ViewHolder(binding: ItemMascotaBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val idView: TextView = binding.itemNumber
         val contentView: TextView = binding.content

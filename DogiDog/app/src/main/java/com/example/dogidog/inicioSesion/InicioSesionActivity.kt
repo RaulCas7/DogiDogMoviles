@@ -1,4 +1,4 @@
-package com.example.dogidog
+package com.example.dogidog.inicioSesion
 
 import android.content.Context
 import android.content.Intent
@@ -7,42 +7,43 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
-import android.view.LayoutInflater
 import android.widget.Toast
+import com.example.dogidog.principal.PantallaPrincipalActivity
+import com.example.dogidog.R
 import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.ActivityMainBinding
-import com.example.dogidog.responseModels.UsuarioResponse
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.logging.Logger
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.math.log
 
 private const val GOOGLE_SIGN_IN = 100 // Asegúrate de que este valor sea único
 class InicioSesionActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    var usuario: Usuario? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
-        val email = prefs.getString("email", null)
-        val provider = prefs.getString("provider", null)
 
-        if (email != null && provider != null) {
+        val id = prefs.getInt("usuario_id", -1) // ID del usuario
+        val usuario = prefs.getString("usuario", null) // Nombre de usuario
+        val email = prefs.getString("usuario_email", null) // Email del usuario
+        val password = prefs.getString("usuario_password", null) // Contraseña del usuario
+        val provider = prefs.getString("provider", null) // Proveedor de autenticación (Google, Local, etc.)
+
+        if (id != -1 && usuario != null && email != null && password != null) {
+            Log.d("SharedPreferences", "Usuario encontrado: ID=$id, Nombre=$usuario, Email=$email, Provider=$provider")
             redirigirAPantallaPrincipal()
         } else {
-            Log.d("PantallaPrincipal", "No hay sesión activa")
+            Log.w("SharedPreferences", "No hay sesión activa o datos incompletos en SharedPreferences")
         }
 
         binding.btnInicioGoogle.setOnClickListener {
@@ -125,8 +126,9 @@ class InicioSesionActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
                 if (response.isSuccessful && response.body() != null) {
+                    usuario = response.body()
                     // Guardar datos de usuario localmente
-                    guardarUsuarioLocal(email)
+                    guardarUsuarioLocal(usuario)
                     redirigirAPantallaPrincipal()
                 } else {
                     Log.w("API", "Usuario o contraseña incorrectos")
@@ -153,7 +155,8 @@ class InicioSesionActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
                 if (response.isSuccessful && response.body() != null) {
-                    guardarUsuarioLocal(email)
+                    usuario = response.body()
+                    guardarUsuarioLocal(usuario)
                     redirigirAPantallaPrincipal()
                 } else {
                     Log.w("API", "Usuario no encontrado en la base de datos")
@@ -169,17 +172,28 @@ class InicioSesionActivity : AppCompatActivity() {
         })
     }
 
-    private fun guardarUsuarioLocal(email: String) {
+    private fun guardarUsuarioLocal(usuario: Usuario?) {
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-        prefs.putString("email", email)
-        prefs.putString("provider", "LOCAL")
-        prefs.apply()
+        if (usuario != null) {
+            prefs.putInt("usuario_id", usuario.id)
+            prefs.putString("usuario", usuario.usuario)
+            prefs.putString("usuario_email", usuario.email)
+            prefs.putString("usuario_password", usuario.password)
+            prefs.putString("provider", "LOCAL")
+            prefs.commit()
+
+            // Verificar si los datos se guardaron correctamente
+            Log.d("SharedPreferences", "Usuario guardado: ${usuario.usuario}, ID: ${usuario.id}, Email: ${usuario.email}")
+        } else {
+            Log.w("SharedPreferences", "Intento de guardar un usuario nulo")
+        }
     }
 
     private fun redirigirAPantallaPrincipal() {
         startActivity(Intent(this, PantallaPrincipalActivity::class.java))
         finish()
     }
+
 }
 
 

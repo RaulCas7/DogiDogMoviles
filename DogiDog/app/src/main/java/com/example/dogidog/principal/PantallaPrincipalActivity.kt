@@ -1,10 +1,9 @@
-package com.example.dogidog
+package com.example.dogidog.principal
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
+import com.example.dogidog.R
 import com.example.dogidog.databinding.ActivityPantallaPrincipalBinding
 
 class PantallaPrincipalActivity : AppCompatActivity() {
@@ -18,7 +17,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Define el índice del elemento que deseas seleccionar por defecto (en este ejemplo, el segundo elemento)
-        val defaultItemIndex = 1
+        val defaultItemIndex = 2
         // Selecciona el elemento por defecto
         binding.navegacion.menu.getItem(defaultItemIndex).isChecked = true
         initComponents()
@@ -41,7 +40,6 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         binding.navegacion.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_mascotas -> {
-
                     setCurrentFragment(mascotasFragment)
                     true
                 }

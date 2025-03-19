@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/containerView"
-        android:name="com.example.dogidog.MascotasFragment"
+        android:name="com.example.dogidog.principal.MascotasFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/navegacion"

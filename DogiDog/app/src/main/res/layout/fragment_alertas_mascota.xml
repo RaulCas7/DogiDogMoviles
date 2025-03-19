@@ -11,5 +11,5 @@
     android:layout_marginRight="5dp"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:spanCount="1"
-    tools:context=".MascotasFragment"
+    tools:context=".principal.MascotasFragment"
     tools:listitem="@layout/item_notificacion" />

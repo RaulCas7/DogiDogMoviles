@@ -1,5 +1,6 @@
 package com.example.dogidog.apiServices
 
+import com.example.dogidog.dataModels.Mascota
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.responseModels.UsuarioResponse
 import retrofit2.Call
@@ -17,4 +18,7 @@ interface ApiService {
 
     @GET("usuarios/inicio")
     fun iniciarSesion(@Query("email") email: String, @Query("password") password: String): Call<Usuario>
+
+    @GET("mascotas/usuario")
+    fun obtenerMascotas(@Query("usuarioId") usuarioId: Int): Call<List<Mascota>>
 }
