@@ -10,6 +10,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     lateinit var binding: ActivityPantallaPrincipalBinding
     lateinit var mapsFragment: MapsFragment
     lateinit var mascotasFragment: MascotasFragment
+    lateinit var notificacionesFragment: NotificacionesFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     private fun initComponents() {
         mapsFragment = MapsFragment()
         mascotasFragment = MascotasFragment()
+        notificacionesFragment = NotificacionesFragment()
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
@@ -47,6 +49,12 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                 R.id.navigation_mapa -> {
 
                     setCurrentFragment(mapsFragment)
+                    true
+                }
+
+                R.id.navigation_notificaciones -> {
+
+                    setCurrentFragment(notificacionesFragment)
                     true
                 }
 

@@ -33,6 +33,7 @@ class MascotasFragment : Fragment() {
 
     lateinit var binding: FragmentMascotasListBinding
     lateinit var mascotaAdapter: MascotaAdapter  // Adaptador para la lista de mascotas
+    var botonesVisibles : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +58,18 @@ class MascotasFragment : Fragment() {
 
         // Carga la lista de mascotas desde la API
         cargarMascotas()
+
+        binding.botonPrincipal.setOnClickListener {
+            alternarBotones()
+        }
+
+// Permitir cerrar los botones al tocar el fondo oscuro
+        binding.fondoOscuro.setOnClickListener {
+            if (botonesVisibles) {
+                ocultarBotones()
+                botonesVisibles = false
+            }
+        }
     }
 
     private fun cargarMascotas() {
@@ -110,5 +123,67 @@ class MascotasFragment : Fragment() {
             Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null
         }
+    }
+    private fun alternarBotones() {
+        if (botonesVisibles) {
+            ocultarBotones()
+        } else {
+            mostrarBotones()
+        }
+        botonesVisibles = !botonesVisibles
+    }
+
+    private fun mostrarBotones() {
+        // Mostrar el fondo oscuro con animación
+        binding.fondoOscuro.apply {
+            visibility = View.VISIBLE
+            animate().alpha(1.0f).setDuration(300).start()
+        }
+
+        // Asegurar que los contenedores sean visibles antes de animarlos
+        binding.contenedorAniadir.visibility = View.VISIBLE
+        binding.contenedorBorrar.visibility = View.VISIBLE
+
+        // Asegurar que los botones sean visibles antes de animarlos
+        binding.botonAniadir.visibility = View.VISIBLE
+        binding.botonBorrar.visibility = View.VISIBLE
+
+        // Mostrar botones con animación (cambiar a translationX en vez de translationY)
+        binding.botonAniadir.animate().translationX(-0f).alpha(1.0f).setDuration(300).start()
+        binding.botonBorrar.animate().translationX(-0f).alpha(1.0f).setDuration(300).start()
+
+        // Asegurar que los textos sean visibles
+        binding.textoAniadir.visibility = View.VISIBLE
+        binding.textoBorrar.visibility = View.VISIBLE
+
+        // Hacer el botón principal completamente visible
+        binding.botonPrincipal.animate().alpha(1.0f).setDuration(300).start()
+    }
+
+    private fun ocultarBotones() {
+        // Ocultar fondo oscuro con animación
+        binding.fondoOscuro.animate().alpha(0.0f).setDuration(300).withEndAction {
+            binding.fondoOscuro.visibility = View.GONE
+        }.start()
+
+        // Ocultar botones con animación
+        binding.botonAniadir.animate().translationX(0f).alpha(0.0f).setDuration(200).withEndAction {
+            binding.botonAniadir.visibility = View.GONE
+        }.start()
+
+        binding.botonBorrar.animate().translationX(0f).alpha(0.0f).setDuration(200).withEndAction {
+            binding.botonBorrar.visibility = View.GONE
+        }.start()
+
+        // Ocultar los textos
+        binding.textoAniadir.visibility = View.INVISIBLE
+        binding.textoBorrar.visibility = View.INVISIBLE
+
+        // Ocultar los contenedores al final
+        binding.contenedorAniadir.visibility = View.GONE
+        binding.contenedorBorrar.visibility = View.GONE
+
+        // Hacer el botón principal semi-transparente de nuevo
+        binding.botonPrincipal.animate().alpha(0.5f).setDuration(300).start()
     }
 }
