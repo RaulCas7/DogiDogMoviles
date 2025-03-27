@@ -1,6 +1,9 @@
 package com.example.dogidog.principal
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.dogidog.R
@@ -46,6 +53,8 @@ class MascotasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        configurarToolbar()
         // Inicializar adaptador vacío
         mascotaAdapter = MascotaAdapter(emptyList()) { mascota ->
             val action = MascotasFragmentDirections
@@ -74,7 +83,7 @@ class MascotasFragment : Fragment() {
 
     private fun cargarMascotas() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://10.0.2.2:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
             .build()
 
@@ -185,5 +194,31 @@ class MascotasFragment : Fragment() {
 
         // Hacer el botón principal semi-transparente de nuevo
         binding.botonPrincipal.animate().alpha(0.5f).setDuration(300).start()
+    }
+
+    private fun configurarToolbar() {
+        // Acceder al ActionBar de la Activity que contiene este Fragment
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            // Crear el TextView personalizado
+            val titleTextView = TextView(requireContext()).apply {
+                text = "Mascotas"
+                setTextColor(Color.WHITE) // Establecer el color blanco
+                setTypeface(null, Typeface.BOLD) // Poner el texto en negrita
+
+                // Obtener la altura de la ActionBar (Toolbar)
+                val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+
+                // Ajustar el tamaño del texto proporcionalmente
+                val textSize = (actionBarHeight * 0.5f).toFloat() // El tamaño del texto será el 50% de la altura
+                this.textSize = textSize / resources.displayMetrics.density // Convertir a SP
+            }
+
+            // Establecer el título con el TextView personalizado
+            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+            customView = titleTextView
+
+            // Cambiar el fondo de la ActionBar (Toolbar)
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+        }
     }
 }

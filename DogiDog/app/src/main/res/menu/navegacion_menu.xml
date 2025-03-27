@@ -20,7 +20,8 @@
     <item
         android:id="@+id/navigation_notificaciones"
         android:icon="@drawable/notifications_24"
-        android:title="@string/titulo_recordatorios"/>
+        android:title="@string/titulo_recordatorios"
+        />
 
     <item
         android:id="@+id/navigation_logros"

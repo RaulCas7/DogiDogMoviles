@@ -1,8 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.DogiDog" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.DogiDog" parent="Theme.Material3.DayNight">
+        <!-- Establece el color del fondo de la ActionBar -->
+        <item name="colorPrimary">@color/primario</item>
+        <!-- Establece el color de los textos en la ActionBar -->
+        <item name="colorPrimaryDark">@color/primario</item>
+        <item name="android:textColorPrimary">@color/primario</item>
     </style>
 
     <style name="Theme.DogiDog" parent="Base.Theme.DogiDog" />

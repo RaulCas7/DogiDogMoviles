@@ -57,6 +57,15 @@
         app:layout_constraintTop_toBottomOf="@id/txtDescripcion"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <CheckBox
+        android:id="@+id/checkSeleccion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="8dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

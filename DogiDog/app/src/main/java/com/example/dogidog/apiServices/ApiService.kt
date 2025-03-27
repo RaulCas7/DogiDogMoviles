@@ -1,8 +1,10 @@
 package com.example.dogidog.apiServices
 
+import com.example.dogidog.dataModels.Logro
 import com.example.dogidog.dataModels.Mascota
 import com.example.dogidog.dataModels.Notificacion
 import com.example.dogidog.dataModels.Usuario
+import com.example.dogidog.dataModels.UsuariosLogro
 import com.example.dogidog.responseModels.UsuarioResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -24,5 +26,11 @@ interface ApiService {
     fun obtenerMascotas(@Query("usuarioId") usuarioId: Int): Call<List<Mascota>>
 
     @GET("notificaciones/usuario")
-    fun obtenerNotificacionesDeUsuario(@Query("usuarioId") usuarioId: Int): Call<List<Notificacion>>
+    fun obtenerNotificacionesDeUsuario(@Query("usuarioId") usuarioId: Int): Call<MutableList<Notificacion>>
+
+    @GET("logros")
+    fun obtenerLogros(): Call<List<Logro>>
+
+    @GET("usuarioLogros/usuario/{usuarioId}")
+    fun buscarLogrosDeUsuario(@Path("usuarioId") usuarioId: Int): Call<List<UsuariosLogro>>
 }

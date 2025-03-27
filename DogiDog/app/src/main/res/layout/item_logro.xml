@@ -1,40 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
+    >
 
-    <!-- Imagen del logro -->
     <ImageView
-        android:id="@+id/imagenLogro"
+        android:id="@+id/imgLogro"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bordercollie"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Información del logro -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/txtTituloLogro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:text="Título del logro"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:paddingBottom="4dp"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/primario"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@id/imgLogro"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/txtDescripcionLogro" />
 
-        <TextView
-            android:id="@+id/nombreLogro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre del Logro"
-            android:textColor="@color/primario"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/txtDescripcionLogro"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Descripción del logro"
+        android:textSize="14sp"
+        android:textColor="@color/gris"
+        android:lineSpacingExtra="4dp"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@id/imgLogro"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloLogro"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/descripcionLogro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Descripción del logro"
-            android:textColor="@color/gris"
-            android:textSize="14sp" />
-    </LinearLayout>
-</LinearLayout>
+    <TextView
+        android:id="@+id/txtFechaObtencion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha de Obtención"
+        android:textSize="12sp"
+        android:textColor="@color/gris"
+        app:layout_constraintTop_toBottomOf="@id/txtDescripcionLogro"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
