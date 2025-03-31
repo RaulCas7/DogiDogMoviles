@@ -51,63 +51,39 @@
         />
 
 
-    <HorizontalScrollView
-        android:id="@+id/scroll"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgFoto"
-        >
+        android:layout_below="@id/imgSexo">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group"
-            android:layout_width="match_parent"
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkableBehavior="none"
-            >
+            android:text="Info"/>
 
-            <!-- Aquí puedes agregar los chips individualmente o inflarlos programáticamente -->
-            <com.google.android.material.chip.Chip
-                android:id="@+id/fInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="Info" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fotos"/>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/fFotos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="Fotos" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peso"/>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/fPeso"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="Peso" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Docs"/>
+    </com.google.android.material.tabs.TabLayout>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/fAlertas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="Alertas" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/fDocumentacion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="Documentacion" />
-
-
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
-
-
-
-
-
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tabLayout"
+        android:scaleType="fitCenter"
+        />
 
 </RelativeLayout>

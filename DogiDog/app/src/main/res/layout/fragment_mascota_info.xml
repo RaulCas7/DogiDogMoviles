@@ -1,240 +1,323 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".mascotas.AnadirMascotaFragment">
 
+    <!-- CardView de Edad -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardEdad"
-        android:layout_width="wrap_content"
+        android:id="@+id/cardMicrochip"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
-        android:layout_marginStart="35dp">
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
-            android:layout_width="125dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="12dp"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/txtMicrochip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="Nº de Microchip"
+                android:textColor="@color/primario"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/numeroMicrochip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtMicrochip"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="985112004879632"
+                android:textColor="@color/azulOscuro"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+    <!-- CardView de Edad -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardEdad"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:cardUseCompatPadding="true"
+        android:layout_marginStart="20dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardMicrochip">
+
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_gravity="center">
 
             <TextView
                 android:id="@+id/txtEdad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="EDAD"
-                android:textSize="25sp"
-                android:textColor="@color/primario"
-                android:layout_marginTop="8dp"
-                android:textStyle="bold"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="4dp"
+                android:text="Edad"
+                android:textColor="@color/primario"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtNumEdad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtEdad"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
                 android:text="2 años"
-                android:textSize="25sp"
-                android:textStyle="bold"
                 android:textColor="@color/azulOscuro"
-                android:layout_marginTop="8dp"
-                android:layout_centerHorizontal="true"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
+    <!-- CardView de Peso -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardPeso"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="35dp">
+        android:layout_marginEnd="20dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintTop_toBottomOf="@+id/cardMicrochip"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <RelativeLayout
-            android:layout_width="125dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/txtPeso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="PESO"
-                android:textSize="25sp"
+                android:text="Peso"
+                android:textSize="18sp"
                 android:textColor="@color/primario"
-                android:layout_marginTop="8dp"
                 android:textStyle="bold"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="4dp" />
 
             <TextView
                 android:id="@+id/txtNumPeso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtPeso"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="20 KG"
-
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/azulOscuro"
-                android:layout_marginTop="8dp"
-                android:layout_centerHorizontal="true"/>
-
-
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
+    <!-- CardView de Vacuna -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardVacuna"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/cardEdad">
+        app:layout_constraintTop_toBottomOf="@id/cardEdad"
+        app:layout_constraintStart_toStartOf="@id/cardEdad"
+        app:layout_constraintWidth_percent="0.4">
 
         <RelativeLayout
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/txtProxVacuna"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Vacuna"
-                android:textSize="25sp"
+                android:text="Prox. Vacuna"
+                android:textSize="18sp"
                 android:textColor="@color/primario"
-                android:layout_marginTop="8dp"
                 android:textStyle="bold"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="4dp" />
 
             <TextView
                 android:id="@+id/txtFechaVacuna"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtProxVacuna"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="29-10-2024"
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/azulOscuro"
-                android:layout_marginTop="8dp"
-                android:layout_centerHorizontal="true"/>
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
+    <!-- CardView de Desparasitacion -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardDesparasitacion"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/cardVacuna">
+        app:layout_constraintTop_toBottomOf="@id/cardPeso"
+        app:layout_constraintEnd_toEndOf="@id/cardPeso"
+        app:layout_constraintWidth_percent="0.4">
 
         <RelativeLayout
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/txtDesparasitacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Desparasitación"
-                android:textSize="25sp"
+                android:text="Prox. Desp"
+                android:textSize="18sp"
                 android:textColor="@color/primario"
-                android:layout_marginTop="8dp"
                 android:textStyle="bold"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="4dp" />
 
             <TextView
                 android:id="@+id/txtFechaDesparasitacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtDesparasitacion"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="29-10-2024"
-
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/azulOscuro"
-                android:layout_marginTop="8dp"
-                android:layout_centerHorizontal="true"/>
-
-
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
+    <!-- CardView de Pienso -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardPienso"
-        android:layout_width="wrap_content"
+        android:id="@+id/metrosRecorridos"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="6dp"
         app:cardUseCompatPadding="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/cardDesparasitacion">
+        app:layout_constraintTop_toBottomOf="@id/cardDesparasitacion"
+        app:layout_constraintEnd_toEndOf="@id/cardDesparasitacion"
+        app:layout_constraintWidth_percent="0.4">
 
         <RelativeLayout
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/txtMetros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recorrido"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textColor="@color/primario"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtMetrosRecorridos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtMetros"
+                android:text="50 metros"
+                android:textSize="18sp"
+                android:textColor="@color/azulOscuro"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- CardView de Pienso -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPienso"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintTop_toBottomOf="@id/cardVacuna"
+        app:layout_constraintStart_toStartOf="@id/cardVacuna"
+        app:layout_constraintWidth_percent="0.4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/txtPienso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Pienso"
-                android:textSize="25sp"
+                android:textSize="18sp"
                 android:textColor="@color/primario"
-                android:layout_marginTop="8dp"
                 android:textStyle="bold"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="4dp" />
 
             <TextView
                 android:id="@+id/txtMarcaPienso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtPienso"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Hill's Mobility"
-
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/azulOscuro"
-                android:layout_marginTop="8dp"
-                android:layout_centerHorizontal="true"/>
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp" />
         </RelativeLayout>
+
     </androidx.cardview.widget.CardView>
 
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

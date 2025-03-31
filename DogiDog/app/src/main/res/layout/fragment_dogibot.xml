@@ -1,87 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <!-- ScrollView principal para la conversación -->
-    <ScrollView
-        android:id="@+id/scroll"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMensajes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/scroll_view"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="10dp"
-        android:descendantFocusability="blocksDescendants">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:scrollbars="vertical" />
 
-        <LinearLayout
-            android:id="@+id/contenidoConversacion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp" />
-    </ScrollView>
-
-    <!-- Botón para eliminar todo -->
-    <ImageView
-        android:id="@+id/eliminarTodo"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@id/scroll_view"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/baseline_delete_24" />
-
-    <!-- Botón para empezar a escuchar -->
-    <ImageView
-        android:id="@+id/startListeningButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="true"
-        android:layout_above="@id/scroll_view"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/baseline_mic_24" />
-
-    <!-- ScrollView para el EditText -->
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:isScrollContainer="false">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/edtEscribir"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:hint="Escriba aquí..."
-            android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingRight="65dp"
-            android:paddingBottom="5dp"
-            android:textSize="18sp" />
-    </ScrollView>
+            android:layout_weight="1"
+            android:hint="Escribe un mensaje..."
+            android:background="@drawable/redondeo"
+            android:padding="8dp"
+            android:textSize="16sp" />
 
-    <!-- Botón para enviar mensaje -->
-    <ImageView
-        android:id="@+id/enviarMensaje"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_alignTop="@id/scroll_view"
-        android:layout_alignBottom="@id/scroll_view"
-        android:layout_alignEnd="@id/scroll_view"
-        android:layout_marginEnd="5dp"
-        android:src="@drawable/baseline_send_24" />
-
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/enviarMensaje"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/baseline_send_24"
+            android:contentDescription="Enviar mensaje" />
+    </LinearLayout>
+</LinearLayout>

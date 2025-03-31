@@ -8,9 +8,26 @@
     <string name="titulo_recordatorios">Recordatorios</string>
     <string name="titulo_logros">Logros</string>
     <string name="titulo_dogibot">Dogibot</string>
+    <string name="sinInfo">---</string>
     <string name="api_key">AIzaSyBLhY2MeljvnCLGRfLbc_R24l73oGIaz8U</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <array name="mascotas"> </array>
     <string name="conexion">http://10.0.2.2:8080/dogidog/</string>
+    <string-array name="raza_array">
+        <item>Pastor Alemán</item>
+        <item>Labrador Retriever</item>
+        <item>Golden Retriever</item>
+        <item>Bulldog Francés</item>
+        <item>Beagle</item>
+        <item>Poodle</item>
+        <item>Chihuahua</item>
+        <item>Dálmata</item>
+        <item>Boxer</item>
+        <item>Husky Siberiano</item>
+        <item>Border Collie</item>
+        <item>Shiba Inu</item>
+        <item>San Bernardo</item>
+        <item>Pug</item>
+    </string-array>
 </resources>

@@ -52,4 +52,5 @@ class MascotaAdapter(
         listaMascotas = nuevaLista
         notifyDataSetChanged()
     }
+
 }

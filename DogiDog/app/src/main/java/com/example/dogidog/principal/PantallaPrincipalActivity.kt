@@ -30,6 +30,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     lateinit var mascotasFragment: MascotasFragment
     lateinit var notificacionesFragment: NotificacionesFragment
     lateinit var logrosFragment: LogrosFragment
+    lateinit var dogibotFragment: DogibotFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         mascotasFragment = MascotasFragment()
         notificacionesFragment = NotificacionesFragment()
         logrosFragment = LogrosFragment()
+        dogibotFragment = DogibotFragment()
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.primario)))
         // Cambiar el título de la ActionBar
         supportActionBar?.title = "Mi Título"
@@ -102,6 +104,11 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                 R.id.navigation_logros -> {
 
                     setCurrentFragment(logrosFragment)
+                    true
+                }
+
+                R.id.navigation_dogibot -> {
+                    setCurrentFragment(dogibotFragment)
                     true
                 }
 

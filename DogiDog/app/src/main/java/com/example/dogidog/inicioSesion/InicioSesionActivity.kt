@@ -116,7 +116,7 @@ class InicioSesionActivity : AppCompatActivity() {
         // Lógica para verificar las credenciales del usuario
         // En este caso, puedes verificar las credenciales contra una API o base de datos local.
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/") // Asegúrate de usar la URL correcta
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de usar la URL correcta
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -145,7 +145,7 @@ class InicioSesionActivity : AppCompatActivity() {
 
     private fun verificarUsuarioEnAPI(email: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/")
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

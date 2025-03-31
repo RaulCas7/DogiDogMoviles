@@ -20,4 +20,12 @@
             android:name="mascota"
             app:argType="com.example.dogidog.dataModels.Mascota" />
     </fragment>
+
+    <action
+        android:id="@+id/action_anadirMascotaFragment_to_mascotasFragment"
+        app:destination="@id/mascotasFragment" />
+
+    <action
+        android:id="@+id/action_mascotasFragment_to_anadirMascotaFragment"
+        app:destination="@id/anadirMascotaFragment" />
 </navigation>

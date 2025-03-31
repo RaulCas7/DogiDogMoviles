@@ -1,198 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/anadirMascotaFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".mascotas.AnadirMascotaFragment">
 
+    <!-- Nombre -->
     <TextView
         android:id="@+id/txtNombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
         android:text="Nombre:"
-        android:textSize="20sp"
         android:textColor="@color/primario"
+        android:textSize="18sp"
         android:textStyle="bold"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edtNombre"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Mascota"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:hint="Nombre de la mascota"
         android:inputType="text"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        android:layout_below="@id/txtNombre"
-        />
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtNombre" />
 
+    <!-- Fecha de nacimiento -->
     <TextView
         android:id="@+id/txtFechaNac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:text="Nacimiento:"
-        android:textSize="20sp"
         android:textColor="@color/primario"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_below="@id/edtNombre"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtNombre" />
 
-    <EditText
+    <LinearLayout
         android:id="@+id/edtFechaNac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:hint="01-01-9999"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:inputType="date"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        android:layout_below="@id/txtFechaNac"
-        />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtFechaNac">
 
+        <EditText
+            android:id="@+id/etFecha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:focusable="false"
+            android:hint="Selecciona fecha"
+            android:inputType="none" />
+
+        <ImageView
+            android:id="@+id/btnCalendario"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="Abrir calendario"
+            android:padding="5dp"
+            android:src="@drawable/baseline_edit_calendar_24" />
+    </LinearLayout>
+
+    <!-- Raza -->
     <TextView
         android:id="@+id/txtRaza"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Raza:"
-        android:textSize="20sp"
+        android:layout_marginTop="12dp"
+        android:text="Raza predominante:"
         android:textColor="@color/primario"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_below="@id/edtFechaNac"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtFechaNac" />
 
     <Spinner
-        android:id="@+id/edtRaza"
-        android:layout_width="match_parent"
+        android:id="@+id/spinnerRaza"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        android:layout_below="@id/txtRaza"
-        />
+        android:textColor="@color/primario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtRaza" />
 
+    <!-- Peso -->
     <TextView
         android:id="@+id/txtPeso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Peso (KG):"
-        android:textSize="20sp"
+        android:layout_marginTop="12dp"
+        android:text="Peso (kg):"
         android:textColor="@color/primario"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_below="@id/edtRaza"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerRaza" />
 
     <EditText
         android:id="@+id/edtPeso"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:hint="0 kg"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:hint="Peso en kg"
         android:inputType="numberDecimal"
-        android:background="@drawable/redondeo"
-        android:padding="16dp"
-        android:layout_below="@id/txtPeso"
-        />
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtPeso" />
 
-    <TextView
-        android:id="@+id/txtFoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Imagen:"
-        android:textSize="20sp"
-        android:textColor="@color/primario"
-        android:textStyle="bold"
-        android:layout_below="@id/edtPeso"
-        />
-
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="179dp"
-        android:layout_height="116dp"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/bordercollie"
-        android:layout_below="@id/edtPeso"/>
-
-    <ImageButton
-        android:id="@+id/change_foto"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_below="@+id/edtPeso"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/txtFoto"
-        android:src="@drawable/baseline_add_a_photo_24" />
-
-    <TextView
-        android:id="@+id/txtSexo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Sexo:"
-        android:textSize="20sp"
-        android:textColor="@color/primario"
-        android:textStyle="bold"
-        android:layout_below="@id/edtPeso"
-        android:layout_toEndOf="@id/imgLogo"
-        />
-
-    <ImageView
-        android:id="@+id/imgSexo"
-        android:layout_width="179dp"
-        android:layout_height="116dp"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/baseline_female_24"
-        android:layout_below="@id/edtPeso"
-        android:layout_toEndOf="@id/imgLogo"/>
-
-    <ImageButton
-        android:id="@+id/change_sexo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_below="@+id/edtPeso"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/txtFoto"
-        android:layout_toEndOf="@id/txtSexo"
-        android:src="@drawable/baseline_change_circle_24" />
-
-    <Button
-        android:id="@+id/btnInicioSesión"
+    <!-- Imagen y sexo en fila -->
+    <LinearLayout
+        android:id="@+id/linearFotoySexo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imgLogo"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:text="Añadir a "
-        android:textAllCaps="false"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtPeso">
+
+        <!-- Imagen de la mascota -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtFoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Imagen:"
+                android:textColor="@color/primario"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgMascota"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/icono_circular"
+                android:src="@drawable/bordercollie" />
+
+            <ImageButton
+                android:id="@+id/btnCambiarFoto"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/icono_circular"
+                android:src="@drawable/baseline_add_a_photo_24" />
+        </LinearLayout>
+
+        <!-- Sexo de la mascota -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtSexo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sexo:"
+                android:textColor="@color/primario"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgSexo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/icono_circular"
+                android:src="@drawable/baseline_male_24" />
+
+            <ImageButton
+                android:id="@+id/btnCambiarSexo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/icono_circular"
+                android:src="@drawable/baseline_change_circle_24" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Botón de añadir mascota -->
+    <Button
+        android:id="@+id/btnAnadirMascota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/primario"
+        android:text="Añadir Mascota"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:backgroundTint="@color/primario"/>
-</RelativeLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearFotoySexo" />
+</androidx.constraintlayout.widget.ConstraintLayout>

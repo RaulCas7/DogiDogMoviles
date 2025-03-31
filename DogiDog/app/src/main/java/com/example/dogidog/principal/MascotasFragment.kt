@@ -26,6 +26,8 @@ import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Mascota
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.FragmentMascotasListBinding
+import com.example.dogidog.mascotas.AnadirMascotaFragment
+import com.example.dogidog.mascotas.MascotaPrincipalFragment
 import com.example.dogidog.placeholder.PlaceholderContent
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,9 +59,7 @@ class MascotasFragment : Fragment() {
         configurarToolbar()
         // Inicializar adaptador vacío
         mascotaAdapter = MascotaAdapter(emptyList()) { mascota ->
-            val action = MascotasFragmentDirections
-                .actionMascotasFragmentToDetalleMascotaFragment(mascota)
-            findNavController().navigate(action)
+            irAMascotaPrincipalFragment(mascota)
         }
 
         binding.listaMascotas.layoutManager = LinearLayoutManager(requireContext())
@@ -72,18 +72,23 @@ class MascotasFragment : Fragment() {
             alternarBotones()
         }
 
-// Permitir cerrar los botones al tocar el fondo oscuro
         binding.fondoOscuro.setOnClickListener {
             if (botonesVisibles) {
                 ocultarBotones()
                 botonesVisibles = false
             }
         }
+        binding.botonAniadir.setOnClickListener {
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.containerView, AnadirMascotaFragment()) // Reemplaza el fragmento actual
+            fragmentTransaction.addToBackStack(null) // Permite volver atrás con el botón de retroceso
+            fragmentTransaction.commit()
+        }
     }
 
     private fun cargarMascotas() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
             .build()
 
@@ -220,5 +225,22 @@ class MascotasFragment : Fragment() {
             // Cambiar el fondo de la ActionBar (Toolbar)
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        cargarMascotas()
+    }
+
+    private fun irAMascotaPrincipalFragment(mascota: Mascota) {
+        val fragment = MascotaPrincipalFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable("mascota", mascota) // Pasar la mascota seleccionada
+            }
+        }
+
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.containerView, fragment)
+        fragmentTransaction.addToBackStack(null) // Para poder volver atrás
+        fragmentTransaction.commit()
     }
 }
