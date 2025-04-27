@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawerLayout">
+
+    <!-- Contenido principal: el mapa y los botones -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Mapa -->
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            map:uiZoomControls="false"
+            map:uiRotateGestures="true" />
+
+        <!-- Contador de metros - ahora en la parte superior derecha -->
+        <TextView
+            android:id="@+id/distanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distancia: 0.0 m"
+            android:textSize="16sp"
+            android:textColor="@color/primario"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:background="#AAFFFFFF"
+            android:padding="8dp" />
+
+        <!-- Contenedor de los botones en la parte inferior -->
+        <LinearLayout
+            android:id="@+id/floatActionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
+
+            <!-- Botón de añadir amigo -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddFriend"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_person_add_24"
+                android:tint="@android:color/white"
+                android:backgroundTint="@color/verde"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Botón de chatear -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabChat"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_chat_24"
+                android:tint="@android:color/white"
+                android:backgroundTint="@color/primario"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Botón de bloquear usuario -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabBlockUser"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_block_24"
+                android:tint="@android:color/white"
+                android:backgroundTint="@color/rojo"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Botón de ver opiniones -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabSeeReviews"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_star_24"
+                android:tint="@android:color/white"
+                android:backgroundTint="@color/amarillo" />
+        </LinearLayout>
+        <!-- Botón Finalizar Paseo -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabEndWalk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_directions_walk_24"
+            android:tint="@android:color/white"
+            android:backgroundTint="@color/rojo"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="16dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <!-- Menú lateral (Navigation Drawer) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/navigationView"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

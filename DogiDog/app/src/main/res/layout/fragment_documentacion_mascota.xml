@@ -1,89 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Lista de Documentos Guardados -->
+    <!-- Filtros para título, descripción, tipo y fecha -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
 
+        <!-- Filtro de Título -->
         <TextView
-            android:id="@+id/tv_saved_documents"
-            android:layout_width="match_parent"
+            android:id="@+id/tvFiltroTitulo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notas y Documentos"
+            android:text="Buscar por:"
             android:textColor="@color/primario"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:layout_marginBottom="8dp" />
+        android:textSize="16sp"
+        android:layout_marginEnd="8dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_documents"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <Spinner
+            android:id="@+id/spinnerTituloFiltro"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primario"
+        />
+
     </LinearLayout>
 
-    <!-- Botón flotante para añadir nueva documentación -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_document"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/primario"
-        android:contentDescription="Añadir documentación"
-        app:tint="@android:color/white"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
-    <!-- Contenedor expandible para añadir documentación -->
-    <LinearLayout
-        android:id="@+id/ll_new_document_form"
+    <!-- Barra de búsqueda -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchViewDocumento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_above="@id/fab_add_document"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp">
+        app:defaultQueryHint="Escribe lo que desees buscar"
+        android:iconifiedByDefault="false"
+        android:layout_gravity="start"
+        android:foregroundTint="@color/primario"
+    app:searchIcon="@drawable/baseline_search_24" />
 
-        <EditText
-            android:id="@+id/et_document_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Título de la documentación"
-            android:inputType="text" />
+    <!-- Lista de Documentos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDocumentos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"/>
+</LinearLayout>
 
-        <EditText
-            android:id="@+id/et_document_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Descripción"
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:minLines="3"
-            android:maxLines="6" />
-
-        <Button
-            android:id="@+id/btn_attach_file"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Adjuntar Archivo" />
-
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="Guardar" />
-    </LinearLayout>
-</RelativeLayout>

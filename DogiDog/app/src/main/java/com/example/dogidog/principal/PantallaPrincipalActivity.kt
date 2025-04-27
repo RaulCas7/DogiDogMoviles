@@ -17,7 +17,6 @@ import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Notificacion
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.ActivityPantallaPrincipalBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -180,17 +179,22 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     }
 
     // Obtener el usuario local desde SharedPreferences
+
     private fun obtenerUsuarioLocal(): Usuario? {
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val id = prefs.getInt("usuario_id", -1)
         val usuario = prefs.getString("usuario", null)
         val email = prefs.getString("usuario_email", null)
         val password = prefs.getString("usuario_password", null)
+        val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
+        val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
 
-        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email")
+        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Lat=$latitud, Lng=$longitud")
 
         return if (id != -1 && usuario != null && email != null && password != null) {
-            Usuario(id, usuario, email, password)
+            val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
+            val longitudDouble = if (longitud != Float.MIN_VALUE) longitud.toDouble() else null
+            Usuario(id, usuario, email, password, 0, latitudDouble, longitudDouble)
         } else {
             Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null

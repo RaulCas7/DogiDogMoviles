@@ -8,6 +8,9 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -45,6 +48,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
     ): View {
         binding = FragmentDogibotBinding.inflate(inflater, container, false)
         // Mensaje inicial del bot
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -161,8 +165,6 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     private fun configurarToolbar() {
-        // Acceder al ActionBar de la Activity que contiene este Fragment
-        // Acceder al ActionBar de la Activity que contiene este Fragment
         (activity as AppCompatActivity).supportActionBar?.apply {
             // Crear el LinearLayout para contener el TextView y la ImageView
             val linearLayout = LinearLayout(requireContext()).apply {
@@ -265,4 +267,31 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_options -> { // El ítem de configuración
+                // Aquí navegas a tu fragmento de configuración
+                (activity as AppCompatActivity).supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.containerView, ConfiguracionFragment()) // Asegúrate de tener el container correcto
+                    addToBackStack(null) // Si quieres que el fragmento de configuración se agregue a la pila de retroceso
+                    commit()
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_menu, menu) // Inflar el menú
+        val menuItem = menu.findItem(R.id.action_delete)
+        val menuItemOptions = menu.findItem(R.id.action_options)
+        menuItem.isVisible = false
+        menuItemOptions.isVisible = true
+        setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
+    }
+
+
 }

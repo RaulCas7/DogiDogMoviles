@@ -1,95 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:background="@drawable/item_background"
-    android:elevation="4dp"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="8dp"
+    android:background="?android:attr/selectableItemBackground">
 
-    <!-- Icono de tipo de documento -->
+    <!-- Icono del documento -->
     <ImageView
-        android:id="@+id/iv_document_icon"
+        android:id="@+id/imgTipoDocumento"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/logo"
-        android:contentDescription="Icono de documento"
-        android:layout_marginEnd="12dp" />
+        android:src="@drawable/bordercollie"
+        android:contentDescription="Icono Documento"
+        android:layout_marginEnd="12dp"
+        android:layout_gravity="center_vertical"/>
 
-    <!-- Contenedor del contenido del item -->
+    <!-- Contenido del documento -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
-        <!-- Título y botón de eliminar -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Título"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/black" />
-
-            <ImageButton
-                android:id="@+id/btn_delete"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@android:drawable/ic_menu_delete"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="Eliminar"
-                android:layout_marginStart="8dp"
-                app:tint="@color/primario" />
-        </LinearLayout>
-
-        <!-- Descripción -->
         <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
+            android:id="@+id/tvTituloDocumento"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Descripción"
-            android:textSize="14sp"
-            android:textColor="@color/gris"
-            android:layout_marginTop="4dp" />
+            android:text="Título del Documento"
+            android:textColor="@color/primario"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
 
-        <!-- Contenedor del adjunto -->
+        <TextView
+            android:id="@+id/tvDescripcionDocumento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descripción breve del documento"
+            android:textColor="@color/gris"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Archivos adjuntos -->
         <LinearLayout
-            android:id="@+id/ll_attachment"
-            android:layout_width="match_parent"
+            android:id="@+id/linearArchivosAdjuntos"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/iv_clip_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/baseline_attach_file_24"
-                android:contentDescription="Icono de clip"
-                android:layout_marginEnd="8dp"
-                app:tint="@color/primario" />
+            android:gravity="start"
+            android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/tv_attachment"
-                android:layout_width="match_parent"
+                android:id="@+id/tvArchivosAdjuntos"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Archivo adjunto: nombre_archivo.pdf"
-                android:textSize="12sp"
-                android:textColor="@color/primario" />
+                android:text="Ver Archivos"
+                android:textColor="@color/primario"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"/>
+
+            <!-- Indicador de archivo adjunto -->
+            <ImageView
+                android:id="@+id/imgArchivoAdjunto"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/baseline_download_24"
+                android:contentDescription="Descargar archivo"
+                android:layout_gravity="center_vertical"/>
         </LinearLayout>
     </LinearLayout>
+
+    <!-- Fecha del documento -->
+    <TextView
+        android:id="@+id/tvFechaDocumento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01/01/2025"
+        android:textColor="@color/primario"
+        android:textSize="14sp"
+        android:layout_gravity="center_vertical"/>
 </LinearLayout>

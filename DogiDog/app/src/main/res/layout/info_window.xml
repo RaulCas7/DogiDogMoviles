@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/info_window_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <!-- Usuario y estado -->
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usuario123"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <!-- Texto paseando con... -->
+    <TextView
+        android:id="@+id/tvWalkingWith"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Paseando con Rocky"
+        android:textColor="#555555"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Imagen del perfil circular -->
+    <ImageView
+        android:id="@+id/ivUserProfile"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:src="@drawable/bordercollie"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/icono_circular"
+        android:padding="2dp" />
+
+    <!-- Imagen de la mascota ajustada al espacio -->
+    <ImageView
+        android:id="@+id/ivPet"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bordercollie"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Nombre y raza del perro -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvPetName"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Rocky"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPetBreed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Border Collie"
+            android:textColor="#666666"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Estrellas -->
+    <LinearLayout
+        android:id="@+id/llStars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:id="@+id/star1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/star_empty" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvNumReviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(12 opiniones)"
+        android:textColor="#333"
+        android:textSize="12sp"
+        android:layout_marginStart="8dp" />
+</LinearLayout>

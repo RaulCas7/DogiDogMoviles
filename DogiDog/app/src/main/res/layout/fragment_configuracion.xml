@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:divider="?android:attr/dividerVertical"
+        android:showDividers="middle">
+
+        <!-- FOTO DE USUARIO -->
+        <ImageView
+            android:id="@+id/imgFotoUsuario"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_person_24"
+            android:scaleType="centerCrop"
+            android:background="@drawable/icono_circular"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvCambiarFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cambiar foto"
+            android:textColor="@color/primario"
+            android:textSize="14sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- NOMBRE DE USUARIO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usuario: "
+                android:textColor="@color/primario"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tvNombreUsuario"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nombre de usuario"
+                android:textColor="@color/primario"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/btnEditarNombre"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_edit_24"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCambiarContrasena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingBottom="12dp"
+            android:background="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cambiar contraseña"
+                android:textColor="@color/primario"
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:id="@+id/btnExpandirContrasena"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_expand_more_24"
+                 />
+        </LinearLayout>
+
+        <!-- Detalles de la sección de cambiar contraseña, inicialmente invisible -->
+        <LinearLayout
+            android:id="@+id/layoutDetallesContrasena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- CONTRASEÑA ACTUAL -->
+            <EditText
+                android:id="@+id/etContrasenaActual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contraseña actual"
+                android:inputType="textPassword"
+                android:textColor="@color/primario"
+                android:layout_marginBottom="16dp"
+                android:padding="10dp" />
+
+            <!-- NUEVA CONTRASEÑA -->
+            <EditText
+                android:id="@+id/etNuevaContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nueva contraseña"
+                android:inputType="textPassword"
+                android:textColor="@color/primario"
+                android:layout_marginBottom="16dp"
+                android:padding="10dp" />
+
+            <!-- CONFIRMAR CONTRASEÑA -->
+            <EditText
+                android:id="@+id/etConfirmarContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirmar contraseña"
+                android:inputType="textPassword"
+                android:textColor="@color/primario"
+                android:layout_marginBottom="24dp"
+                android:padding="10dp" />
+
+            <Button
+                android:id="@+id/btnGuardarContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar nueva contraseña"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="24dp"
+                />
+        </LinearLayout>
+
+
+        <!-- CONFIGURACIONES DE APP -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Preferencias"
+            android:textColor="@color/primario"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <Switch
+            android:id="@+id/switchNotificaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Activar notificaciones"
+            android:textColor="@color/primario"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Switch
+            android:id="@+id/switchModoNoche"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Modo noche"
+            android:textColor="@color/primario"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Switch
+            android:id="@+id/switchSilenciarDogiBot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Silenciar DogiBot"
+            android:textColor="@color/primario"
+            android:textSize="14sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- PERSONALIZACIÓN DOGIBOT -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Personalización DogiBot y mapa"
+            android:textColor="@color/primario"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:id="@+id/layoutCambiarImagenBot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:id="@+id/imgDogiBot"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/bordercollie"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Imagen de DogiBot y mapa"
+                android:textColor="@color/primario"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/btnEditarDogiBot"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_edit_24"
+                />
+        </LinearLayout>
+
+        <!-- SESIÓN -->
+        <TextView
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cerrar sesión"
+            android:textColor="@color/primario"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/btnEliminarCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Eliminar cuenta"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="14sp"
+            android:layout_marginBottom="32dp" />
+
+    </LinearLayout>
+</ScrollView>
+

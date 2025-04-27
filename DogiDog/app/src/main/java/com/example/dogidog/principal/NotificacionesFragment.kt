@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -88,6 +87,16 @@ class NotificacionesFragment : Fragment() {
                 eliminarSeleccionadas()
                 true
             }
+            R.id.action_options -> { // El ítem de configuración
+                // Aquí navegas a tu fragmento de configuración
+                (activity as AppCompatActivity).supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.containerView, ConfiguracionFragment()) // Asegúrate de tener el container correcto
+                    addToBackStack(null) // Si quieres que el fragmento de configuración se agregue a la pila de retroceso
+                    commit()
+
+                }
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -149,11 +158,25 @@ class NotificacionesFragment : Fragment() {
         val usuario = prefs.getString("usuario", null)
         val email = prefs.getString("usuario_email", null)
         val password = prefs.getString("usuario_password", null)
+        val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
+        val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
+        val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
 
-        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email")
+        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Preguntas=$contadorPreguntas")
 
         return if (id != -1 && usuario != null && email != null && password != null) {
-            Usuario(id, usuario, email, password)
+            val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
+            val longitudDouble = if (longitud != Float.MIN_VALUE) longitud.toDouble() else null
+
+            Usuario(
+                id = id,
+                usuario = usuario,
+                email = email,
+                password = password,
+                contadorPreguntas = contadorPreguntas,
+                latitud = latitudDouble,
+                longitud = longitudDouble
+            )
         } else {
             Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null

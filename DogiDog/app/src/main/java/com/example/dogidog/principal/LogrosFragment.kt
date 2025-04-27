@@ -5,10 +5,10 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -25,11 +25,6 @@ import com.example.dogidog.dataModels.Logro
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.UsuariosLogro
 import com.example.dogidog.databinding.FragmentLogrosBinding
-import com.example.dogidog.databinding.FragmentMascotasListBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +44,7 @@ class LogrosFragment : Fragment() {
     ): View {
         // Inflamos el layout y vinculamos el binding
         binding = FragmentLogrosBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -135,7 +131,7 @@ class LogrosFragment : Fragment() {
         val password = prefs.getString("usuario_password", null)
 
         return if (id != -1 && usuario != null && email != null && password != null) {
-            Usuario(id, usuario, email, password)
+            Usuario(id, usuario, email, password, 0,null,null)
         } else {
             null
         }
@@ -165,6 +161,31 @@ class LogrosFragment : Fragment() {
             // Cambiar el fondo de la ActionBar (Toolbar)
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_options -> { // El ítem de configuración
+                // Aquí navegas a tu fragmento de configuración
+                (activity as AppCompatActivity).supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.containerView, ConfiguracionFragment()) // Asegúrate de tener el container correcto
+                    addToBackStack(null) // Si quieres que el fragmento de configuración se agregue a la pila de retroceso
+                    commit()
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_menu, menu) // Inflar el menú
+        val menuItem = menu.findItem(R.id.action_delete)
+        val menuItemOptions = menu.findItem(R.id.action_options)
+        menuItem.isVisible = false
+        menuItemOptions.isVisible = true
+        setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
     }
 }
 

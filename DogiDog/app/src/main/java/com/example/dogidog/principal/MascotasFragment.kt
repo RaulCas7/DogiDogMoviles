@@ -7,10 +7,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -18,8 +19,6 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.dogidog.R
 import com.example.dogidog.adapters.MascotaAdapter
 import com.example.dogidog.apiServices.ApiService
@@ -28,7 +27,6 @@ import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.FragmentMascotasListBinding
 import com.example.dogidog.mascotas.AnadirMascotaFragment
 import com.example.dogidog.mascotas.MascotaPrincipalFragment
-import com.example.dogidog.placeholder.PlaceholderContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,6 +48,8 @@ class MascotasFragment : Fragment() {
     ): View {
         // Infla el diseño del fragmento y almacena el binding
         binding = FragmentMascotasListBinding.inflate(inflater, container, false)
+        // Configura el menú para que el fragmento lo maneje
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -128,16 +128,34 @@ class MascotasFragment : Fragment() {
         val usuario = prefs.getString("usuario", null)
         val email = prefs.getString("usuario_email", null)
         val password = prefs.getString("usuario_password", null)
+        val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
+        val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
+        val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
+        val valoracion = prefs.getInt("usuario_valoracion", 0)  // Nuevo campo de valoración
 
-        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email")
+        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Preguntas=$contadorPreguntas, Valoración=$valoracion")
 
         return if (id != -1 && usuario != null && email != null && password != null) {
-            Usuario(id, usuario, email, password)
+            val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
+            val longitudDouble = if (longitud != Float.MIN_VALUE) longitud.toDouble() else null
+
+            Usuario(
+                id = id,
+                usuario = usuario,
+                email = email,
+                password = password,
+                contadorPreguntas = contadorPreguntas,
+                latitud = latitudDouble,
+                longitud = longitudDouble,
+                valoracion = valoracion  // Agregar la valoración al objeto Usuario
+            )
         } else {
             Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null
         }
     }
+
+
     private fun alternarBotones() {
         if (botonesVisibles) {
             ocultarBotones()
@@ -226,6 +244,31 @@ class MascotasFragment : Fragment() {
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_options -> { // El ítem de configuración
+                // Aquí navegas a tu fragmento de configuración
+                (activity as AppCompatActivity).supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.containerView, ConfiguracionFragment()) // Asegúrate de tener el container correcto
+                    addToBackStack(null) // Si quieres que el fragmento de configuración se agregue a la pila de retroceso
+                    commit()
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_menu, menu) // Inflar el menú
+        val menuItem = menu.findItem(R.id.action_delete)
+        val menuItemOptions = menu.findItem(R.id.action_options)
+        menuItem.isVisible = false
+        menuItemOptions.isVisible = true
+        setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
+    }
     override fun onResume() {
         super.onResume()
         cargarMascotas()
@@ -243,4 +286,6 @@ class MascotasFragment : Fragment() {
         fragmentTransaction.addToBackStack(null) // Para poder volver atrás
         fragmentTransaction.commit()
     }
+
+
 }

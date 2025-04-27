@@ -13,11 +13,10 @@ android {
 
     defaultConfig {
         applicationId = "com.example.dogidog"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 34// Cambiado a 34 para coincidir con compileSdk
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -59,6 +58,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -89,4 +90,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:20.3.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
 
+    implementation ("com.jjoe64:graphview:4.2.2")
+
+    implementation("org.maplibre.gl:android-sdk:10.0.2")
 }

@@ -30,4 +30,31 @@
         <item>San Bernardo</item>
         <item>Pug</item>
     </string-array>
+
+    <!-- Array para el Spinner de períodos -->
+    <string-array name="periodos">
+        <item>Mensual</item>
+        <item>Anual</item>
+    </string-array>
+
+    <!-- Array para el Spinner de períodos -->
+    <string-array name="tipos">
+        <item>Mensual</item>
+        <item>Anual</item>
+    </string-array>
+
+    <!-- Array para el Spinner de años -->
+    <string-array name="años">
+        <item>2024</item>
+        <item>2023</item>
+    </string-array>
+
+    <string-array name="opciones">
+        <item>Título</item>
+        <item>Descripción</item>
+        <item>Tipo</item>
+        <item>Fecha</item>
+    </string-array>
+
+    <string name="mapbox_access_token">YOUR_MAPBOX_API_KEY</string>
 </resources>

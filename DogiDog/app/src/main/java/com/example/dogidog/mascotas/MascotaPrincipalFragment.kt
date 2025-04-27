@@ -131,8 +131,8 @@ class MascotaPrincipalFragment : Fragment() {
                 when (tab?.position) {
                     0 -> replaceFragment(MascotaInfoFragment(), mascota)
                     1 -> replaceFragment(MascotaGaleriaFragment(), mascota)
-                    2 -> replaceFragment(MascotaInfoFragment(), mascota)
-                    3 -> replaceFragment(MascotaInfoFragment(), mascota)
+                    2 -> replaceFragment(GraficaPesoFragment(), mascota)
+                    3 -> replaceFragment(DocumentacionFragment(), mascota)
                 }
             }
 

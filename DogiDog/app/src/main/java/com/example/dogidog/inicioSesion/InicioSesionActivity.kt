@@ -179,11 +179,23 @@ class InicioSesionActivity : AppCompatActivity() {
             prefs.putString("usuario", usuario.usuario)
             prefs.putString("usuario_email", usuario.email)
             prefs.putString("usuario_password", usuario.password)
+            prefs.putInt("usuario_preguntas", usuario.contadorPreguntas)
+
+            usuario.latitud?.let {
+                prefs.putFloat("usuario_latitud", it.toFloat())
+            }
+
+            usuario.longitud?.let {
+                prefs.putFloat("usuario_longitud", it.toFloat())
+            }
+
+            // Guardamos la valoración (0 si es null)
+            prefs.putInt("usuario_valoracion", (usuario.valoracion ?: 0) as Int)
+
             prefs.putString("provider", "LOCAL")
             prefs.commit()
 
-            // Verificar si los datos se guardaron correctamente
-            Log.d("SharedPreferences", "Usuario guardado: ${usuario.usuario}, ID: ${usuario.id}, Email: ${usuario.email}")
+            Log.d("SharedPreferences", "Usuario guardado: ${usuario.usuario}, ID: ${usuario.id}, Email: ${usuario.email}, Valoración: ${usuario.valoracion}")
         } else {
             Log.w("SharedPreferences", "Intento de guardar un usuario nulo")
         }
