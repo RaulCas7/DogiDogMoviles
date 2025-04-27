@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.dogidog.R
@@ -41,6 +42,7 @@ class MascotasFragment : Fragment() {
     lateinit var binding: FragmentMascotasListBinding
     lateinit var mascotaAdapter: MascotaAdapter  // Adaptador para la lista de mascotas
     var botonesVisibles : Boolean = false
+    var modoEliminar = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,10 +59,17 @@ class MascotasFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configurarToolbar()
-        // Inicializar adaptador vacío
+
         mascotaAdapter = MascotaAdapter(emptyList()) { mascota ->
-            irAMascotaPrincipalFragment(mascota)
+            if (modoEliminar) {
+                confirmarEliminacionMascota(mascota)
+            } else {
+                irAMascotaPrincipalFragment(mascota)
+            }
         }
+
+        binding.listaMascotas.layoutManager = LinearLayoutManager(requireContext())
+        binding.listaMascotas.adapter = mascotaAdapter
 
         binding.listaMascotas.layoutManager = LinearLayoutManager(requireContext())
         binding.listaMascotas.adapter = mascotaAdapter
@@ -84,7 +93,89 @@ class MascotasFragment : Fragment() {
             fragmentTransaction.addToBackStack(null) // Permite volver atrás con el botón de retroceso
             fragmentTransaction.commit()
         }
+
+        binding.botonBorrar.setOnClickListener {
+            modoEliminar = !modoEliminar
+            actualizarModoEliminar()
+        }
+
+
     }
+
+    private fun salirModoEliminar() {
+        modoEliminar = false
+        actualizarModoEliminar()
+    }
+
+    private fun eliminarMascota(mascota: Mascota) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        val call = service.eliminarMascota(mascota.id) // Llamada a la API DELETE
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Mascota ${mascota.nombre} eliminada", Toast.LENGTH_SHORT).show()
+
+                    // Actualizamos la lista localmente
+                    val listaActualizada = mascotaAdapter.listaMascotas.toMutableList()
+                    listaActualizada.remove(mascota)
+                    mascotaAdapter.actualizarLista(listaActualizada)
+                } else {
+                    Toast.makeText(requireContext(), "Error al eliminar mascota", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("API", "Error al eliminar: ${t.message}")
+                Toast.makeText(requireContext(), "Error al eliminar mascota", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Aquí deberías llamar a tu API para eliminar la mascota
+        Toast.makeText(requireContext(), "Mascota ${mascota.nombre} eliminada", Toast.LENGTH_SHORT).show()
+
+        // Actualizamos la lista localmente
+        val listaActualizada = mascotaAdapter.listaMascotas.toMutableList()
+        listaActualizada.remove(mascota)
+        mascotaAdapter.actualizarLista(listaActualizada)
+    }
+    private fun confirmarEliminacionMascota(mascota: Mascota) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar Mascota")
+            .setMessage("¿Seguro que quieres eliminar a ${mascota.nombre}?")
+            .setPositiveButton("Eliminar") { dialog, _ ->
+                eliminarMascota(mascota) // Llamada para eliminar la mascota
+                salirModoEliminar() // Salir del modo de eliminación
+                dialog.dismiss() // Cerrar el diálogo
+            }
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss() // Solo cerrar el diálogo sin hacer nada
+            }
+            .show()
+    }
+
+    private fun actualizarModoEliminar() {
+        if (modoEliminar) {
+            binding.textoBorrar.text = "Cancelar eliminación"
+            binding.botonBorrar.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+            binding.fondoOscuro.visibility = View.VISIBLE
+            configurarToolbarEliminar()
+        } else {
+            binding.textoBorrar.text = "Eliminar Mascota"
+            binding.botonBorrar.setImageResource(android.R.drawable.ic_menu_delete)
+            binding.fondoOscuro.visibility = View.GONE
+            configurarToolbar()
+        }
+       // mascotaAdapter.modoEliminar = modoEliminar
+        mascotaAdapter.notifyDataSetChanged()
+    }
+
 
     private fun cargarMascotas() {
         val retrofit = Retrofit.Builder()
@@ -242,6 +333,33 @@ class MascotasFragment : Fragment() {
 
             // Cambiar el fondo de la ActionBar (Toolbar)
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+        }
+    }
+
+    private fun configurarToolbarEliminar() {
+        // Acceder al ActionBar de la Activity que contiene este Fragment
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            // Crear el TextView personalizado
+            val titleTextView = TextView(requireContext()).apply {
+                text = "Eliminar mascotas"
+                setTextColor(Color.WHITE) // Establecer el color blanco
+                setTypeface(null, Typeface.BOLD) // Poner el texto en negrita
+
+                // Obtener la altura de la ActionBar (Toolbar)
+                val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+
+                // Ajustar el tamaño del texto proporcionalmente
+                val textSize = (actionBarHeight * 0.5f).toFloat() // El tamaño del texto será el 50% de la altura
+                this.textSize = textSize / resources.displayMetrics.density // Convertir a SP
+            }
+
+            // Establecer el título con el TextView personalizado
+            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+            customView = titleTextView
+
+            // Cambiar el fondo de la ActionBar (Toolbar)
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.rojo)))
+
         }
     }
 

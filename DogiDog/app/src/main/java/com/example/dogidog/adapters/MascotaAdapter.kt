@@ -11,7 +11,7 @@ import com.example.dogidog.R
 import com.example.dogidog.dataModels.Mascota
 
 class MascotaAdapter(
-    private var listaMascotas: List<Mascota>,
+    var listaMascotas: List<Mascota>,
     private val onClick: (Mascota) -> Unit
 ) : RecyclerView.Adapter<MascotaAdapter.MascotaViewHolder>() {
 

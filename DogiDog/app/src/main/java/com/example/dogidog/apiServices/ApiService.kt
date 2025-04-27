@@ -3,6 +3,7 @@ package com.example.dogidog.apiServices
 import com.example.dogidog.dataModels.Logro
 import com.example.dogidog.dataModels.Mascota
 import com.example.dogidog.dataModels.Notificacion
+import com.example.dogidog.dataModels.Raza
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.UsuariosLogro
 import com.example.dogidog.dataModels.Valoracion
@@ -19,6 +20,14 @@ interface ApiService {
 
     @GET("usuarios") // Cambia por el endpoint correcto
     fun obtenerTodosLosUsuarios(): Call<List<Usuario>>
+
+    @GET("razas")
+    fun obtenerTodasLasRazas(): Call<List<Raza>>
+    @DELETE("mascotas/{id}")
+    fun eliminarMascota(@Path("id") id: Int): Call<Void> // Método para eliminar la mascota
+
+    @POST("mascotas")
+    fun guardarMascota(@Body mascota: Mascota): Call<Void>
     @POST("usuarios")
     fun registrarUsuario(@Body usuario: Usuario): Call<Void>
     @GET("usuarios/email/{email}")
