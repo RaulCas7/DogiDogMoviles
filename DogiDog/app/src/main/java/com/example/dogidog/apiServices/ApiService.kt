@@ -1,18 +1,25 @@
 package com.example.dogidog.apiServices
 
+import com.example.dogidog.dataModels.Documentacion
+import com.example.dogidog.dataModels.DocumentacionCrear
 import com.example.dogidog.dataModels.Logro
 import com.example.dogidog.dataModels.Mascota
+import com.example.dogidog.dataModels.MascotaCrear
 import com.example.dogidog.dataModels.Notificacion
 import com.example.dogidog.dataModels.Raza
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.UsuariosLogro
 import com.example.dogidog.dataModels.Valoracion
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -27,7 +34,7 @@ interface ApiService {
     fun eliminarMascota(@Path("id") id: Int): Call<Void> // Método para eliminar la mascota
 
     @POST("mascotas")
-    fun guardarMascota(@Body mascota: Mascota): Call<Void>
+    fun guardarMascota(@Body mascota: MascotaCrear): Call<Void>
     @POST("usuarios")
     fun registrarUsuario(@Body usuario: Usuario): Call<Void>
     @GET("usuarios/email/{email}")
@@ -60,4 +67,28 @@ interface ApiService {
 
     @GET("valoraciones/usuario/{id}")
     fun obtenerValoracionesDeUsuario(@Path("id") id: Int): Call<List<Valoracion>>
+
+    @Multipart
+    @POST("documentacion/guardar")
+    fun guardarDocumentacion(
+        @Part("idmascota") idmascota: Int,
+        @Part("documentacion") documentacionJson: RequestBody,
+        @Part archivo: MultipartBody.Part
+    ): Call<DocumentacionCrear>
+
+    @POST("documentacion")
+    fun guardarDocumentacionSinArchivo(
+        @Body documentacion: DocumentacionCrear
+    ): Call<DocumentacionCrear>
+
+    @GET("documentacion/mascota")
+    fun obtenerDocumentacionPorMascota(
+        @Query("mascotaId") mascotaId: Int
+    ): Call<List<Documentacion>>
+
+    @DELETE("documentacion/{id}")
+    fun eliminarDocumentacion(@Path("id") id: Int): Call<Void>
+
+    @PUT("mascotas/{id}")
+    fun actualizarMascota(@Path("id") id: Int, @Body mascota: Mascota): Call<Mascota>
 }

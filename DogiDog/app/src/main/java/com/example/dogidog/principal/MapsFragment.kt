@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.example.dogidog.R
 import com.example.dogidog.apiServices.ApiService
+import com.example.dogidog.dataModels.Mascota
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.Valoracion
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -320,11 +321,34 @@ class MapsFragment : Fragment() {
 
 
         if (selectedPet == null) {
-            PetSelectionDialogFragment { petName ->
-                selectedPet = petName
-                initMap(view)
-                iniciarPaseo()
-            }.show(childFragmentManager, "PetSelectionDialog")
+            // Hacer la llamada a obtenerMascotas antes de mostrar el diálogo
+            val call = apiService.obtenerMascotas(obtenerUsuarioLocal()!!.id) // Asegúrate que tienes el usuarioId disponible
+
+            call.enqueue(object : Callback<List<Mascota>> {
+                override fun onResponse(call: Call<List<Mascota>>, response: Response<List<Mascota>>) {
+                    if (response.isSuccessful) {
+                        val mascotas = response.body() ?: emptyList()
+
+                        if (mascotas.isNotEmpty()) {
+                            // Mostrar el diálogo con las mascotas
+                            PetSelectionDialogFragment(mascotas) { mascotaSeleccionada ->
+                                selectedPet = mascotaSeleccionada.nombre // o el campo que quieras usar
+                                initMap(view)
+                                iniciarPaseo()
+                                iniciarActualizacionPeriodica()
+                            }.show(childFragmentManager, "PetSelectionDialog")
+                        } else {
+                            Toast.makeText(context, "No tienes mascotas aún", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(context, "Error al obtener mascotas", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Mascota>>, t: Throwable) {
+                    Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         } else {
             initMap(view)
             iniciarPaseo()

@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,14 +18,12 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
 import com.example.dogidog.R
 import com.example.dogidog.apiServices.ApiService
-import com.example.dogidog.dataModels.Mascota
+import com.example.dogidog.dataModels.MascotaCrear
 import com.example.dogidog.dataModels.Raza
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.FragmentAnadirMascotaBinding
-import com.example.dogidog.principal.PantallaPrincipalActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -173,8 +170,7 @@ class AnadirMascotaFragment : Fragment() {
             val formattedDate = outputFormat.format(date)
 
             // Crear el objeto Mascota con los datos
-            val mascota = Mascota(
-                id = 0, // Asignar el ID correspondiente cuando se guarde en la base de datos
+            val mascota = MascotaCrear(
                 usuario = obtenerUsuarioLocal()!!, // Asignar el usuario correspondiente
                 nombre = nombre,
                 raza = razaSeleccionada, // Usar el objeto Raza completo
@@ -207,7 +203,7 @@ class AnadirMascotaFragment : Fragment() {
         return diffInYears.toInt()
     }
 
-    private fun guardarMascota(mascota: Mascota) {
+    private fun guardarMascota(mascota: MascotaCrear) {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección de tu servidor
             .addConverterFactory(GsonConverterFactory.create())

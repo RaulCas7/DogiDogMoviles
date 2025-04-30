@@ -13,11 +13,19 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogidog.R
+import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Documentacion
 import com.example.dogidog.databinding.ItemDocumentBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 class DocumentosAdapter(
     private val context: Context,
     private var documentos: List<Documentacion>
@@ -70,18 +78,34 @@ class DocumentosAdapter(
         // Limpiar cualquier contenido anterior
         holder.contenedorArchivos.removeAllViews()
 
-        // Botón para desplegar archivos
-        val verArchivosText = TextView(holder.itemView.context).apply {
-            text = "Ver Archivos"
-            setTextColor(ContextCompat.getColor(context, R.color.primario))
-            textSize = 14f
-            setPadding(0, 8, 0, 0)
-            setOnClickListener {
-                mostrarArchivos(doc.archivo, holder)
+        holder.itemView.setOnLongClickListener {
+            AlertDialog.Builder(context).apply {
+                setTitle("Eliminar documento")
+                setMessage("¿Desea borrar el documento \"${doc.tipo}\"?")
+                setPositiveButton("Sí") { _, _ ->
+                    eliminarDocumento(doc.id, position)
+                }
+                setNegativeButton("Cancelar", null)
+                show()
             }
+            true // importante para que se consuma el evento
         }
 
-        holder.contenedorArchivos.addView(verArchivosText)
+        if (!doc.archivo.isNullOrBlank()) {
+            val verArchivosText = TextView(holder.itemView.context).apply {
+                text = "Ver Archivos"
+                setTextColor(ContextCompat.getColor(context, R.color.primario))
+                textSize = 14f
+                setPadding(0, 8, 0, 0)
+                setOnClickListener {
+                    mostrarArchivos(doc.archivo, holder)
+                }
+            }
+            holder.contenedorArchivos.addView(verArchivosText)
+            holder.contenedorArchivos.visibility = View.VISIBLE
+        } else {
+            holder.contenedorArchivos.visibility = View.GONE
+        }
     }
 
     private fun mostrarArchivos(archivoStr: String?, holder: DocumentoViewHolder) {
@@ -140,5 +164,31 @@ class DocumentosAdapter(
     fun actualizarLista(nuevaLista: List<Documentacion>) {
         documentosFiltrados = nuevaLista
         notifyDataSetChanged()
+    }
+
+    private fun eliminarDocumento(id: Int, position: Int) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        service.eliminarDocumentacion(id).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Documento eliminado", Toast.LENGTH_SHORT).show()
+                    documentos = documentos.filterIndexed { index, _ -> index != position }
+                    documentosFiltrados = documentos
+                    notifyItemRemoved(position)
+                } else {
+                    Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(context, "Fallo al conectar", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

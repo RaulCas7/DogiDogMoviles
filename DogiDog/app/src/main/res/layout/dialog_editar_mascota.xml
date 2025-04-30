@@ -1,0 +1,159 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+
+    <!-- Peso -->
+    <TextView
+        android:id="@+id/tvPesoTitle"
+        android:text="Peso (kg):"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primario"
+        android:paddingBottom="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Valor Actual -->
+        <TextView
+            android:id="@+id/tvPesoActual"
+            android:text="10 kg"
+            android:textSize="20dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+            android:textColor="@color/primario"
+            android:paddingEnd="12dp" />
+
+        <!-- Campo Editable -->
+        <EditText
+            android:id="@+id/etPeso"
+            android:inputType="numberDecimal"
+            android:hint="Nuevo Peso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primario"
+            android:layout_weight="1"
+            android:paddingEnd="12dp"/>
+    </LinearLayout>
+
+    <!-- Fecha Vacuna -->
+    <TextView
+        android:id="@+id/tvFechaVacunaTitle"
+        android:text="Fecha Próxima Vacuna:"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:textColor="@color/primario"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Valor Actual -->
+        <TextView
+            android:id="@+id/tvFechaVacunaActual"
+            android:text="12/12/2025"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/primario"
+            android:paddingEnd="12dp" />
+
+        <!-- Campo Editable -->
+        <TextView
+            android:id="@+id/tvFechaVacuna"
+            android:text="Seleccionar fecha"
+            android:textColor="@color/primario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Fecha Desparacitación -->
+    <TextView
+        android:id="@+id/tvFechaDespTitle"
+        android:text="Fecha Próxima Desparasitación:"
+        android:textStyle="bold"
+        android:textColor="@color/primario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Valor Actual -->
+        <TextView
+            android:id="@+id/tvFechaDespActual"
+            android:text="15/11/2025"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/primario"
+            android:paddingEnd="12dp" />
+
+        <!-- Campo Editable -->
+        <TextView
+            android:id="@+id/tvFechaDesp"
+            android:text="Seleccionar fecha"
+            android:textColor="@color/primario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Marca de Pienso -->
+    <TextView
+        android:id="@+id/tvPiensoTitle"
+        android:text="Marca de Pienso:"
+
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primario"
+        android:paddingBottom="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Valor Actual -->
+        <TextView
+            android:id="@+id/tvPiensoActual"
+            android:text="Royal Canin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primario"
+            android:layout_weight="1"
+            android:paddingEnd="12dp"
+            android:textSize="20dp"/>
+
+
+        <!-- Campo Editable -->
+        <EditText
+            android:id="@+id/etPienso"
+            android:hint="Nueva Marca de Pienso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingEnd="12dp"/>
+    </LinearLayout>
+
+</LinearLayout>
+
+

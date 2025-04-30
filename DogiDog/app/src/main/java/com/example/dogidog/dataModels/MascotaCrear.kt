@@ -1,13 +1,10 @@
 package com.example.dogidog.dataModels
 
-
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
-data class Mascota(
-    val id : Int,
+data class MascotaCrear(
     val usuario: Usuario,
     val nombre : String,
     val raza : Raza,
@@ -19,5 +16,4 @@ data class Mascota(
     val fechaProximaVacunacion : String,
     val fechaProximaDesparasitacion : String,
     val foto : String,
-    val metrosRecorridos : Long,
-    val pienso : String) : Parcelable
+    val metrosRecorridos : Long) : Parcelable
