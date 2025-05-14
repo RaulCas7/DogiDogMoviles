@@ -10,6 +10,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.dogidog.R
 import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Mascota
@@ -22,7 +24,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 class MascotaInfoFragment : Fragment() {
@@ -47,9 +53,64 @@ class MascotaInfoFragment : Fragment() {
         mascota?.let {
             binding.txtNumEdad.text = it.edad.toString() + " años"
             binding.txtNumPeso.text = it.peso.toString() + " kg"
-            binding.txtFechaVacuna.text = it.fechaProximaVacunacion
-            binding.txtFechaDesparasitacion.text = it.fechaProximaDesparasitacion
+
+            if(mascota.genero.equals("Hembra")){
+                if(mascota.peso!! < mascota.raza.pesoMinHembra){
+                    binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
+                    binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtProblemaPeso.text = "(Infrapeso)"
+                    binding.txtProblemaPeso.isVisible = true
+                }else if (mascota.peso!! > mascota.raza.pesoMaxHembra){
+                    binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg "
+                    binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtProblemaPeso.text = "(Sobrepeso)"
+                    binding.txtProblemaPeso.isVisible = true
+                }
+            }else if(mascota.genero.equals("Macho")){
+                if(mascota.peso!! < mascota.raza.pesoMinMacho){
+                    binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
+                    binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtProblemaPeso.text = "(Infrapeso)"
+                    binding.txtProblemaPeso.isVisible = true
+                }else if (mascota.peso!! > mascota.raza.pesoMaxMacho){
+                    binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
+                    binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    binding.txtProblemaPeso.text = "(Sobrepeso)"
+                    binding.txtProblemaPeso.isVisible = true
+                }
+            }
+            val formatoFecha = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val fechaActual = Date()
+
+// Verificamos y coloreamos la fecha de vacunación
+            mascota.fechaProximaVacunacion?.let { fechaStr ->
+                try {
+                    val fechaVacuna = formatoFecha.parse(fechaStr)
+                    if (fechaVacuna != null && fechaVacuna.before(fechaActual)) {
+                        binding.txtFechaVacuna.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    }
+                } catch (e: ParseException) {
+                    e.printStackTrace()
+                }
+            }
+
+// Verificamos y coloreamos la fecha de desparasitación
+            mascota.fechaProximaDesparasitacion?.let { fechaStr ->
+                try {
+                    val fechaDesparasitacion = formatoFecha.parse(fechaStr)
+                    if (fechaDesparasitacion != null && fechaDesparasitacion.before(fechaActual)) {
+                        binding.txtFechaDesparasitacion.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                    }
+                } catch (e: ParseException) {
+                    e.printStackTrace()
+                }
+            }
             binding.txtMarcaPienso.text = it.pienso
+            binding.numeroMicrochip.text = it.microchip
         } ?: run {
             // Si mascota es null, puedes manejar el caso o mostrar un mensaje predeterminado
             binding.txtNumEdad.text = getString(R.string.sinInfo)
@@ -70,6 +131,7 @@ class MascotaInfoFragment : Fragment() {
 
         val inputPeso = view.findViewById<EditText>(R.id.etPeso)
         val inputPienso = view.findViewById<EditText>(R.id.etPienso)
+        val inputMicrochip = view.findViewById<EditText>(R.id.etMicrochip) // Agregamos el input de microchip
         val fechaVacuna = view.findViewById<TextView>(R.id.tvFechaVacuna)
         val fechaDesp = view.findViewById<TextView>(R.id.tvFechaDesp)
 
@@ -78,6 +140,10 @@ class MascotaInfoFragment : Fragment() {
         view.findViewById<TextView>(R.id.tvFechaVacunaActual).text = "${mascota?.fechaProximaVacunacion}"
         view.findViewById<TextView>(R.id.tvFechaDespActual).text = "${mascota?.fechaProximaDesparasitacion}"
         view.findViewById<TextView>(R.id.tvPiensoActual).text = mascota?.pienso ?: "No especificado"
+        view.findViewById<TextView>(R.id.tvMicrochipActual).text = mascota?.microchip ?: "No especificado"
+
+        // Establecer el microchip actual
+        inputMicrochip.setText(mascota?.microchip ?: "")
 
         inputPeso.setText(mascota?.peso?.toString() ?: "")
         inputPienso.setText(mascota?.pienso ?: "")
@@ -109,6 +175,7 @@ class MascotaInfoFragment : Fragment() {
             .setPositiveButton("Guardar") { _, _ ->
                 val pesoNuevo = inputPeso.text.toString()
                 val piensoNuevo = inputPienso.text.toString()
+                val microchipNuevo = inputMicrochip.text.toString() // Obtener el valor del microchip
                 val fechaVacunaNueva = fechaVacuna.text.toString()
                 val fechaDespNueva = fechaDesp.text.toString()
 
@@ -127,7 +194,8 @@ class MascotaInfoFragment : Fragment() {
                     fechaProximaDesparasitacion = fechaDespNueva,
                     foto = mascota?.foto ?: "",
                     metrosRecorridos = mascota?.metrosRecorridos ?: 0L,
-                    pienso = piensoNuevo // nuevo campo
+                    pienso = piensoNuevo, // nuevo campo
+                    microchip = microchipNuevo // nuevo campo
                 )
 
                 // Realizar la llamada a la API para actualizar la mascota
@@ -136,6 +204,7 @@ class MascotaInfoFragment : Fragment() {
             .setNegativeButton("Cancelar", null)
             .show()
     }
+
 
     private fun actualizarMascotaAPI(mascotaEditar: Mascota) {
         // Aquí usaríamos Retrofit para hacer la petición PUT a la API
@@ -170,10 +239,68 @@ class MascotaInfoFragment : Fragment() {
 
 
     private fun actualizarUI(mascota: Mascota) {
+        binding.numeroMicrochip.text = mascota.microchip
         binding.txtNumEdad.text = "${mascota.edad ?: "?"} años"
         binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
-        binding.txtFechaVacuna.text = mascota.fechaProximaVacunacion ?: getString(R.string.sinInfo)
-        binding.txtFechaDesparasitacion.text = mascota.fechaProximaDesparasitacion ?: getString(R.string.sinInfo)
+        binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.primario))
+        binding.txtProblemaPeso.isVisible = false
+        if(mascota.genero.equals("Hembra")){
+            if(mascota.peso!! < mascota.raza.pesoMinHembra){
+                binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
+                binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtProblemaPeso.text = "(Infrapeso)"
+                binding.txtProblemaPeso.isVisible = true
+            }else if (mascota.peso!! > mascota.raza.pesoMaxHembra){
+                binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg "
+                binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtProblemaPeso.text = "(Sobrepeso)"
+                binding.txtProblemaPeso.isVisible = true
+            }
+        }else if(mascota.genero.equals("Macho")){
+            if(mascota.peso!! < mascota.raza.pesoMinMacho){
+                binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
+                binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtProblemaPeso.text = "(Infrapeso)"
+                binding.txtProblemaPeso.isVisible = true
+            }else if (mascota.peso!! > mascota.raza.pesoMaxMacho){
+                binding.txtNumPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtNumPeso.text = "${mascota.peso ?: "?"} kg"
+                binding.txtProblemaPeso.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                binding.txtProblemaPeso.text = "(Sobrepeso)"
+                binding.txtProblemaPeso.isVisible = true
+            }
+        }
+        val formatoFecha = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val fechaActual = Date()
+
+        binding.txtFechaVacuna.setTextColor(ContextCompat.getColor(requireContext(), R.color.primario))
+// Verificamos y coloreamos la fecha de vacunación
+        mascota.fechaProximaVacunacion?.let { fechaStr ->
+            try {
+                val fechaVacuna = formatoFecha.parse(fechaStr)
+                if (fechaVacuna != null && fechaVacuna.before(fechaActual)) {
+                    binding.txtFechaVacuna.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                }
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+        }
+
+        binding.txtFechaDesparasitacion.setTextColor(ContextCompat.getColor(requireContext(), R.color.primario))
+// Verificamos y coloreamos la fecha de desparasitación
+        mascota.fechaProximaDesparasitacion?.let { fechaStr ->
+            try {
+                val fechaDesparasitacion = formatoFecha.parse(fechaStr)
+                if (fechaDesparasitacion != null && fechaDesparasitacion.before(fechaActual)) {
+                    binding.txtFechaDesparasitacion.setTextColor(ContextCompat.getColor(requireContext(), R.color.rojo))
+                }
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+        }
         binding.txtMarcaPienso.text = mascota.pienso ?: getString(R.string.sinInfo)
     }
 

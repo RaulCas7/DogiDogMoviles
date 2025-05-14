@@ -45,6 +45,7 @@
 
     <!-- Array para el Spinner de años -->
     <string-array name="años">
+        <item>2025</item>
         <item>2024</item>
         <item>2023</item>
     </string-array>

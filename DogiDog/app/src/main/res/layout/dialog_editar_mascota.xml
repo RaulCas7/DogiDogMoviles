@@ -154,6 +154,45 @@
             android:paddingEnd="12dp"/>
     </LinearLayout>
 
+    <!-- Microchip -->
+    <TextView
+        android:id="@+id/tvMicrochipTitle"
+        android:text="Microchip:"
+        android:textStyle="bold"
+        android:textColor="@color/primario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Valor Actual -->
+        <TextView
+            android:id="@+id/tvMicrochipActual"
+            android:text="Microchip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/primario"
+            android:paddingEnd="12dp"
+            android:textSize="20dp" />
+
+        <!-- Campo Editable -->
+        <EditText
+            android:id="@+id/etMicrochip"
+            android:hint="Actualizar Microchip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingEnd="12dp"
+            android:inputType="text" />
+    </LinearLayout>
+
+
 </LinearLayout>
 
 

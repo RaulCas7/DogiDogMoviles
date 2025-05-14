@@ -25,14 +25,17 @@
             android:id="@+id/distanceText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Distancia: 0.0 m"
-            android:textSize="16sp"
-            android:textColor="@color/primario"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#AAFFFFFF"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:text="Distancia: 0.0 m"
+            android:textColor="@color/primario"
+            android:textSize="16sp" />
 
         <!-- Contenedor de los botones en la parte inferior -->
         <LinearLayout
@@ -47,32 +50,12 @@
 
             <!-- Botón de añadir amigo -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddFriend"
+                android:id="@+id/fabAddReview"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/baseline_person_add_24"
+                android:src="@drawable/baseline_add_24"
                 android:tint="@android:color/white"
                 android:backgroundTint="@color/verde"
-                android:layout_marginEnd="16dp" />
-
-            <!-- Botón de chatear -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabChat"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/baseline_chat_24"
-                android:tint="@android:color/white"
-                android:backgroundTint="@color/primario"
-                android:layout_marginEnd="16dp" />
-
-            <!-- Botón de bloquear usuario -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabBlockUser"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/baseline_block_24"
-                android:tint="@android:color/white"
-                android:backgroundTint="@color/rojo"
                 android:layout_marginEnd="16dp" />
 
             <!-- Botón de ver opiniones -->

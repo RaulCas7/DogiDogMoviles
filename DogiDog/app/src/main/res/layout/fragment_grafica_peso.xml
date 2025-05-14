@@ -89,6 +89,7 @@
 
     <!-- Tarjeta de detalles -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardDetalles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
@@ -127,5 +128,18 @@
                 android:textSize="12sp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- Mensaje cuando no hay datos -->
+    <TextView
+        android:id="@+id/tvMensajeSinDatos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cuando modifiques el peso se empezará con el seguimiento"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:padding="16dp"
+        android:textSize="14sp" />
+
 
 </LinearLayout>

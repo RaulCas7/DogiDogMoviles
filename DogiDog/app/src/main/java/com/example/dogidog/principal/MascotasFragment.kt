@@ -1,6 +1,7 @@
 package com.example.dogidog.principal
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
@@ -28,6 +29,7 @@ import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.FragmentMascotasListBinding
 import com.example.dogidog.mascotas.AnadirMascotaFragment
 import com.example.dogidog.mascotas.MascotaPrincipalFragment
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -177,6 +179,8 @@ class MascotasFragment : Fragment() {
     }
 
 
+
+
     private fun cargarMascotas() {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
@@ -199,6 +203,13 @@ class MascotasFragment : Fragment() {
                     if (response.isSuccessful) {
                         val listaMascotas = response.body() ?: emptyList()
 
+                        // Cargar las fotos después de obtener las mascotas
+                        listaMascotas.forEach { mascota ->
+                            if (!mascota.foto.isNullOrEmpty()) {
+                                cargarFotoMascota(mascota)  // Obtener la foto de cada mascota
+                            }
+                        }
+
                         // Actualizar los datos en lugar de crear un nuevo adaptador
                         mascotaAdapter.actualizarLista(listaMascotas)
                     } else {
@@ -212,6 +223,38 @@ class MascotasFragment : Fragment() {
             })
         }
     }
+
+    private fun cargarFotoMascota(mascota: Mascota) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        val call = service.getFotoMascota(mascota.id)  // Llamar a la API para obtener la foto de la mascota
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val inputStream = response.body()?.byteStream()
+
+                    // Asegúrate de que el inputStream no sea nulo
+                    if (inputStream != null) {
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        mascota.fotoBitmap = bitmap  // Guardar la foto como un bitmap en la mascota
+                        mascotaAdapter.notifyDataSetChanged()  // Notificar al adaptador que los datos han cambiado
+                    }
+                } else {
+                    Log.e("CargarFoto", "Error al obtener la foto")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("CargarFoto", "Error en la conexión: ${t.message}")
+            }
+        })
+    }
+
 
     private fun obtenerUsuarioLocal(): Usuario? {
         val prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
@@ -383,8 +426,10 @@ class MascotasFragment : Fragment() {
         inflater.inflate(R.menu.toolbar_menu, menu) // Inflar el menú
         val menuItem = menu.findItem(R.id.action_delete)
         val menuItemOptions = menu.findItem(R.id.action_options)
+        val menuItemDoc = menu.findItem(R.id.action_nuevo_documento)
         menuItem.isVisible = false
         menuItemOptions.isVisible = true
+        menuItemDoc.isVisible = false
         setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
     }
     override fun onResume() {

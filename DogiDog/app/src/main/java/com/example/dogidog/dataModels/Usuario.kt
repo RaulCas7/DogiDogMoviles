@@ -1,16 +1,19 @@
 package com.example.dogidog.dataModels
 
+import android.graphics.Bitmap
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Usuario(
     val id: Int,
-    val usuario: String,
+    var usuario: String,
     val email: String,
-    val password: String,
+    var password: String,
     val contadorPreguntas: Int = 0,
     val latitud: Double?,  // latitud del usuario
     val longitud: Double?,  // longitud del usuario
-    val valoracion: Int? = null
+    val valoracion: Int? = null,
+    var foto: String? = null,
+    var fotoBitmap: Bitmap? = null // Agregar el Bitmap para la foto
 ) : Parcelable

@@ -67,7 +67,7 @@ class LogrosFragment : Fragment() {
     private fun obtenerLogrosDisponibles() {
         // Crear cliente Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -93,7 +93,7 @@ class LogrosFragment : Fragment() {
         val usuarioId = obtenerUsuarioLocal()?.id ?: return // Obtener el ID del usuario logueado
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -117,7 +117,7 @@ class LogrosFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<UsuariosLogro>>, t: Throwable) {
-                Toast.makeText(requireContext(), "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+
             }
         })
     }
@@ -187,5 +187,7 @@ class LogrosFragment : Fragment() {
         menuItemOptions.isVisible = true
         setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
     }
+
+
 }
 

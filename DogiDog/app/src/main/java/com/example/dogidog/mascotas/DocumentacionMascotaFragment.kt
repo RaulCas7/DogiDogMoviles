@@ -53,10 +53,10 @@ class DocumentacionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configurarToolbar()
+
         setHasOptionsMenu(true)
         mascota = arguments?.getParcelable("mascota")!!
-
+        configurarToolbar(mascota)
         val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
             .addConverterFactory(GsonConverterFactory.create())
@@ -131,22 +131,35 @@ class DocumentacionFragment : Fragment() {
         adapter.actualizarLista(filtrados)
     }
 
-    private fun configurarToolbar() {
+    private fun configurarToolbar(mascota: Mascota) {
+        // Acceder al ActionBar de la Activity que contiene este Fragment
         (activity as AppCompatActivity).supportActionBar?.apply {
+            // Crear el TextView personalizado
             val titleTextView = TextView(requireContext()).apply {
-                text = "Documentación"
-                setTextColor(Color.WHITE)
-                setTypeface(null, Typeface.BOLD)
 
+                text = mascota.nombre
+                setTextColor(Color.WHITE) // Establecer el color blanco
+                setTypeface(null, Typeface.BOLD) // Poner el texto en negrita
+
+                // Obtener la altura de la ActionBar (Toolbar)
                 val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
-                val textSize = (actionBarHeight * 0.5f).toFloat()
-                this.textSize = textSize / resources.displayMetrics.density
+
+                // Ajustar el tamaño del texto proporcionalmente
+                val textSize = (actionBarHeight * 0.5f).toFloat() // El tamaño del texto será el 50% de la altura
+                this.textSize = textSize / resources.displayMetrics.density // Convertir a SP
             }
 
-
+            // Establecer el título con el TextView personalizado
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
             customView = titleTextView
+
+            // Cambiar el fondo de la ActionBar (Toolbar)
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24) // Usa tu propio ícono de flecha
+
+            setHasOptionsMenu(true)
         }
     }
 

@@ -84,6 +84,8 @@ dependencies {
     // Also add the dependency for the Google Play services library and specify its version
     implementation("com.google.firebase:firebase-auth:21.0.1")
 
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 

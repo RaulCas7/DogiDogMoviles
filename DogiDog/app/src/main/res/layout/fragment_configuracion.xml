@@ -17,19 +17,11 @@
             android:id="@+id/imgFotoUsuario"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/baseline_person_24"
+            android:src="@drawable/bordercollie"
             android:scaleType="centerCrop"
             android:background="@drawable/icono_circular"
             android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:id="@+id/tvCambiarFoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cambiar foto"
-            android:textColor="@color/primario"
-            android:textSize="14sp"
-            android:layout_marginBottom="24dp" />
 
         <!-- NOMBRE DE USUARIO -->
         <LinearLayout

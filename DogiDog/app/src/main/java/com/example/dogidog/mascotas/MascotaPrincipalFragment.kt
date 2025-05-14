@@ -46,12 +46,17 @@ class MascotaPrincipalFragment : Fragment() {
         mascota?.let {
             binding.txtNombre.text = it.nombre
             binding.txtRaza.text = it.raza.nombre
-            binding.imgFoto.setImageResource(R.drawable.bordercollie)
+            binding.imgFoto.setImageResource(
+                if (it.genero == "Macho") R.drawable.bordercollie
+                else R.drawable.borderhembra
+                )
 
             binding.imgSexo.setImageResource(
                 if (it.genero == "Macho") R.drawable.baseline_male_24
                 else R.drawable.baseline_female_24
             )
+
+
         }
 
         if (savedInstanceState == null) {

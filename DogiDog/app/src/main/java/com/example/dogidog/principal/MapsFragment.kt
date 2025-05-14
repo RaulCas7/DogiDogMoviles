@@ -16,8 +16,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -25,8 +28,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.example.dogidog.R
+import com.example.dogidog.adapters.ValoracionAdapter
 import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Mascota
+import com.example.dogidog.dataModels.Recorrido
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.Valoracion
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -51,6 +56,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDate
+import java.time.LocalDateTime
+
 class MapsFragment : Fragment() {
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -67,6 +75,11 @@ class MapsFragment : Fragment() {
     private lateinit var apiService: ApiService
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
+    private var idRecorridoActual: Int? = null
+    private var mascotaMapa: Mascota? = null
+    private var tiempoInicioPaseo : Long = 0
+    private var valoracionUsuario : Int = 0
+
 
 
 
@@ -79,6 +92,12 @@ class MapsFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         googleMapGlobal = googleMap
+
+        // Actualizar el TextView con la distancia
+        // Obtener la referencia del TextView
+        val distanciaTextView = view?.findViewById<TextView>(R.id.distanceText)
+
+
 
         // Estilo del mapa
         val styleJson = """[{"elementType":"geometry","stylers":[{}]},{"elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"elementType":"labels.text.fill","stylers":[{"color":"#616161"}]},{"elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry","stylers":[{}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#b2d4ff"}]}]"""
@@ -97,7 +116,7 @@ class MapsFragment : Fragment() {
         }
 
         // Obtener la localización y actualizar el mapa
-        obtenerUsuariosYMostrarEnMapa()
+        obtenerUsuariosYRecorridosYMostrarEnMapa()
         val originalBitmap = BitmapFactory.decodeResource(resources, iconResId)
         val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 80, 80, false)
         val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
@@ -120,10 +139,8 @@ class MapsFragment : Fragment() {
                             .anchor(0.5f, 0.5f)
                             .flat(true)
                             .rotation(location.bearing)
-                            .title("Tú estás aquí")
+                            .title(null) // Sin título, evita InfoWindow
                     )
-
-
                 } else {
                     myLocationMarker!!.position = latLng
                     myLocationMarker!!.rotation = location.bearing
@@ -138,133 +155,114 @@ class MapsFragment : Fragment() {
 
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 
-                // Aquí actualizamos las coordenadas del usuario en el servidor
+                // Actualizar coordenadas en el servidor
                 actualizarCoordenadasUsuario(location.latitude, location.longitude)
 
+                // Calcular la distancia
                 lastLocation?.let {
                     val distance = it.distanceTo(location)
                     totalDistance += distance
                 }
-                lastLocation = location
-            }
 
+                lastLocation = location
+
+                distanciaTextView?.text = "Distancia recorrida: ${"%.2f".format(totalDistance)} m"
+            }
         }
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
 
-        googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            override fun getInfoWindow(marker: Marker): View? = null
-
-            override fun getInfoContents(marker: Marker): View {
-                val view = layoutInflater.inflate(R.layout.info_window, null)
-
-                // Obtener el usuario actual desde SharedPreferences
-                val sharedPreferences = context?.getSharedPreferences("nombre_preferencia", Context.MODE_PRIVATE)
-                val usuarioActualId = sharedPreferences?.getInt("usuarioId", -1) // O el tipo que estés usando para almacenar el ID
-
-                // Verificar si el marcador es el del usuario actual
-                if (marker == myLocationMarker) {
-                    // Si es el marcador del usuario actual, podemos poner un mensaje especial o hacer algo diferente
-                    view.findViewById<TextView>(R.id.tvUsername).text = "Tú estás aquí 🐾"
-                    view.findViewById<ImageView>(R.id.ivUserProfile).setImageResource(R.drawable.bordercollie) // Foto del usuario
-                    view.findViewById<ImageView>(R.id.ivPet).setImageResource(R.drawable.bordercollie) // Foto de la mascota
-                    // Puedes personalizar lo que se muestra para el usuario actual, por ejemplo, no mostrar las valoraciones
-                    return view
-                }
-
-                // Si no es el marcador del usuario actual, continuar con la información del marcador normal
-                val usuario = marker.tag as? Usuario ?: return view // Si no existe el tag, retorna la vista vacía
-
-                val valoracion = usuario.valoracion ?: 0 // Valoración del usuario (si no existe, es 0)
-                view.findViewById<TextView>(R.id.tvNumReviews).text = "(0 opiniones)"
-
-                obtenerValoracionesDelUsuario(usuario.id) { numValoraciones ->
-                    // Ahora tenemos el número de valoraciones, lo actualizamos en la UI
-                    view.findViewById<TextView>(R.id.tvNumReviews).text = "($numValoraciones opiniones)"
-                }
-
-                // Asignar nombre de usuario y su foto
-                view.findViewById<TextView>(R.id.tvUsername).text = "${usuario.usuario} 🐾"
-                view.findViewById<ImageView>(R.id.ivUserProfile).setImageResource(R.drawable.bordercollie) // Foto del usuario
-                view.findViewById<ImageView>(R.id.ivPet).setImageResource(R.drawable.bordercollie) // Foto de la mascota
-
-                // Asignar las estrellas según la valoración
-                val star1 = view.findViewById<ImageView>(R.id.star1)
-                val star2 = view.findViewById<ImageView>(R.id.star2)
-                val star3 = view.findViewById<ImageView>(R.id.star3)
-                val star4 = view.findViewById<ImageView>(R.id.star4)
-                val star5 = view.findViewById<ImageView>(R.id.star5)
-
-                // Mostrar las estrellas según la valoración
-                when (valoracion) {
-                    1 -> {
-                        star1.setImageResource(R.drawable.star_filled)
-                        star2.setImageResource(R.drawable.star_empty)
-                        star3.setImageResource(R.drawable.star_empty)
-                        star4.setImageResource(R.drawable.star_empty)
-                        star5.setImageResource(R.drawable.star_empty)
-                    }
-                    2 -> {
-                        star1.setImageResource(R.drawable.star_filled)
-                        star2.setImageResource(R.drawable.star_filled)
-                        star3.setImageResource(R.drawable.star_empty)
-                        star4.setImageResource(R.drawable.star_empty)
-                        star5.setImageResource(R.drawable.star_empty)
-                    }
-                    3 -> {
-                        star1.setImageResource(R.drawable.star_filled)
-                        star2.setImageResource(R.drawable.star_filled)
-                        star3.setImageResource(R.drawable.star_filled)
-                        star4.setImageResource(R.drawable.star_empty)
-                        star5.setImageResource(R.drawable.star_empty)
-                    }
-                    4 -> {
-                        star1.setImageResource(R.drawable.star_filled)
-                        star2.setImageResource(R.drawable.star_filled)
-                        star3.setImageResource(R.drawable.star_filled)
-                        star4.setImageResource(R.drawable.star_filled)
-                        star5.setImageResource(R.drawable.star_empty)
-                    }
-                    5 -> {
-                        star1.setImageResource(R.drawable.star_filled)
-                        star2.setImageResource(R.drawable.star_filled)
-                        star3.setImageResource(R.drawable.star_filled)
-                        star4.setImageResource(R.drawable.star_filled)
-                        star5.setImageResource(R.drawable.star_filled)
-                    }
-                    else -> {
-                        star1.setImageResource(R.drawable.star_empty)
-                        star2.setImageResource(R.drawable.star_empty)
-                        star3.setImageResource(R.drawable.star_empty)
-                        star4.setImageResource(R.drawable.star_empty)
-                        star5.setImageResource(R.drawable.star_empty)
-                    }
-                }
-
-                return view
-            }
-        })
         googleMap.setOnMarkerClickListener { marker ->
-            view?.findViewById<LinearLayout>(R.id.floatActionsContainer)?.visibility = View.VISIBLE
+                if (marker == myLocationMarker) {
+                    // No hacer nada ni mostrar ventana
+                    true // ← esto evita que se abra InfoWindow
+                } else {
 
-            view?.findViewById<FloatingActionButton>(R.id.fabAddFriend)?.setOnClickListener {
-                Toast.makeText(requireContext(), "Añadir a amigo", Toast.LENGTH_SHORT).show()
-            }
-            view?.findViewById<FloatingActionButton>(R.id.fabChat)?.setOnClickListener {
-                Toast.makeText(requireContext(), "Iniciar chat", Toast.LENGTH_SHORT).show()
-            }
-            view?.findViewById<FloatingActionButton>(R.id.fabBlockUser)?.setOnClickListener {
-                Toast.makeText(requireContext(), "Bloquear usuario", Toast.LENGTH_SHORT).show()
-            }
-            view?.findViewById<FloatingActionButton>(R.id.fabSeeReviews)?.setOnClickListener {
-                Toast.makeText(requireContext(), "Ver opiniones", Toast.LENGTH_SHORT).show()
-            }
-            false
+                    val recorrido : Recorrido = marker.tag as Recorrido
+
+                    view?.findViewById<LinearLayout>(R.id.floatActionsContainer)?.visibility = View.VISIBLE
+
+                    val fabAddReview = view?.findViewById<FloatingActionButton>(R.id.fabAddReview)
+                    fabAddReview?.setOnClickListener {
+                        val dialogView = layoutInflater.inflate(R.layout.dialog_add_review, null)
+                        val etDescripcion = dialogView.findViewById<EditText>(R.id.etDescripcionValoracion)
+                        val ratingBar = dialogView.findViewById<RatingBar>(R.id.ratingBar)
+
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Añadir valoración")
+                            .setView(dialogView)
+                            .setPositiveButton("Enviar") { _, _ ->
+                                val descripcion = etDescripcion.text.toString()
+                                val estrellas = ratingBar.rating.toInt()
+
+                                // Aquí deberías hacer la llamada a tu API para enviar la valoración
+                                enviarValoracion(obtenerUsuarioLocal()!!, recorrido.mascota.usuario, estrellas, descripcion)
+                            }
+                            .setNegativeButton("Cancelar", null)
+                            .show()
+                    }
+
+                    view?.findViewById<FloatingActionButton>(R.id.fabSeeReviews)?.setOnClickListener {
+                        val usuarioId = recorrido.mascota.usuario?.id ?: return@setOnClickListener
+
+                        obtenerValoracionesDelUsuario(usuarioId) { valoraciones ->
+                            if (valoraciones.isEmpty()) {
+                                Toast.makeText(requireContext(), "Este usuario no tiene valoraciones aún.", Toast.LENGTH_SHORT).show()
+                                return@obtenerValoracionesDelUsuario
+                            }
+
+                            // Inflar el layout del dialog que contiene una ListView
+                            val dialogView = LayoutInflater.from(requireContext()).inflate(android.R.layout.list_content, null)
+                            val listView = ListView(requireContext())
+                            listView.adapter = ValoracionAdapter(requireContext(), valoraciones)
+
+                            val builder = AlertDialog.Builder(requireContext())
+                            builder.setTitle("Opiniones sobre ${recorrido.mascota.usuario.usuario}")
+                            builder.setView(listView)
+                            builder.setPositiveButton("Cerrar") { dialog, _ -> dialog.dismiss() }
+                            builder.show()
+                        }
+                    }
+                    false
+                }
         }
 
         googleMap.setOnMapClickListener {
             view?.findViewById<LinearLayout>(R.id.floatActionsContainer)?.visibility = View.GONE
         }
+    }
+
+
+    private fun enviarValoracion(usuarioActual: Usuario, usuarioValorado: Usuario, estrellas: Int, descripcion: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        val valoracion = Valoracion(
+            usuario = usuarioActual,
+            valorado = usuarioValorado,
+            puntuacion = estrellas,
+            comentario = descripcion,
+            fechaValoracion = LocalDateTime.now().toString()
+        )
+
+        val call = service.enviarValoracion(valoracion)
+        call.enqueue(object : Callback<Valoracion> {
+            override fun onResponse(call: Call<Valoracion>, response: Response<Valoracion>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "¡Valoración enviada!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.e("API", "Error al enviar valoración: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Valoracion>, t: Throwable) {
+                Log.e("API", "Fallo en la conexión: ${t.message}")
+            }
+        })
     }
 
 
@@ -293,6 +291,7 @@ class MapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         usuario = obtenerUsuarioLocal()!!;
         fabEndWalk = view.findViewById(R.id.fabEndWalk)
         fabEndWalk.setOnClickListener {
@@ -302,7 +301,7 @@ class MapsFragment : Fragment() {
         // El runnable que se ejecutará cada 5 minutos
         runnable = object : Runnable {
             override fun run() {
-                obtenerUsuariosYMostrarEnMapa() // Llamamos a la función para obtener los usuarios y sus ubicaciones
+                obtenerUsuariosYRecorridosYMostrarEnMapa() // Llamamos a la función para obtener los usuarios y sus ubicaciones
                 handler.postDelayed(this, 300000) // 300000ms = 5 minutos
             }
         }
@@ -318,8 +317,6 @@ class MapsFragment : Fragment() {
 
         apiService = retrofit.create(ApiService::class.java)
 
-
-
         if (selectedPet == null) {
             // Hacer la llamada a obtenerMascotas antes de mostrar el diálogo
             val call = apiService.obtenerMascotas(obtenerUsuarioLocal()!!.id) // Asegúrate que tienes el usuarioId disponible
@@ -332,9 +329,38 @@ class MapsFragment : Fragment() {
                         if (mascotas.isNotEmpty()) {
                             // Mostrar el diálogo con las mascotas
                             PetSelectionDialogFragment(mascotas) { mascotaSeleccionada ->
+                                mascotaMapa = mascotaSeleccionada
                                 selectedPet = mascotaSeleccionada.nombre // o el campo que quieras usar
                                 initMap(view)
+
+                                // Obtener fecha actual en formato ISO-8601 (yyyy-MM-dd)
+                                val fechaActual = LocalDate.now().toString()
+
+// Crear objeto Recorrido con mascota seleccionada y fecha
+                                val nuevoRecorrido = Recorrido(
+                                    mascota = mascotaSeleccionada,
+                                    fecha = fechaActual,
+                                    distancia = 0,
+                                    duracion = 0
+                                )
+
+// Hacer la llamada a la API para guardar el recorrido
+                                apiService.guardarRecorrido(nuevoRecorrido).enqueue(object : Callback<Int> {
+                                    override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                                        if (response.isSuccessful) {
+                                            idRecorridoActual = response.body()
+                                            Toast.makeText(context, "Recorrido iniciado (ID: $idRecorridoActual)", Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(context, "Error al iniciar recorrido", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<Int>, t: Throwable) {
+                                        Toast.makeText(context, "Fallo en la conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
                                 iniciarPaseo()
+                                tiempoInicioPaseo = System.currentTimeMillis()
                                 iniciarActualizacionPeriodica()
                             }.show(childFragmentManager, "PetSelectionDialog")
                         } else {
@@ -432,13 +458,44 @@ class MapsFragment : Fragment() {
 
             distanciaRecorrida = result[0] // Almacena la distancia recorrida
 
-            // Muestra el diálogo con la distancia recorrida
+            // Calcular la duración del paseo
+            val duracionRecorrido = (System.currentTimeMillis() - tiempoInicioPaseo) / 1000 // Duración en segundos
+
+            // Mostrar el diálogo con la distancia recorrida y duración
             mostrarDialogoFinalizacion(distanciaRecorrida)
+
+            // Crear un objeto Recorrido para actualizar
+            val recorridoActualizado = Recorrido(
+                mascota = mascotaMapa!!, // Asegúrate de usar el objeto completo de la mascota
+                fecha = LocalDate.now().toString(),
+                distancia = distanciaRecorrida.toInt(),
+                duracion = duracionRecorrido.toInt()
+            )
+
+            // Llamar a la API para actualizar el recorrido
+            if (idRecorridoActual != null) {
+                apiService.actualizarRecorrido(idRecorridoActual!!, recorridoActualizado).enqueue(object : Callback<Recorrido> {
+                    override fun onResponse(call: Call<Recorrido>, response: Response<Recorrido>) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(requireContext(), "Paseo finalizado y recorrido actualizado", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Error al actualizar recorrido", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Recorrido>, t: Throwable) {
+                        Toast.makeText(requireContext(), "Fallo en la conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            } else {
+                Toast.makeText(requireContext(), "No se encontró el ID del recorrido", Toast.LENGTH_SHORT).show()
+            }
         } else {
             // Si no se ha podido obtener la ubicación final o inicial
             Toast.makeText(requireContext(), "No se pudo calcular la distancia", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     fun mostrarDialogoFinalizacion(distancia: Float) {
         val dialog = AlertDialog.Builder(requireContext())
@@ -516,7 +573,7 @@ class MapsFragment : Fragment() {
         val usuarioId = obtenerUsuarioLocal()?.id ?: return
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/")
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -576,9 +633,9 @@ class MapsFragment : Fragment() {
             null
         }
     }
-    private fun obtenerValoracionesDelUsuario(usuarioId: Int, param: (Any) -> Unit) {
+    fun obtenerValoracionesDelUsuario(usuarioId: Int, callback: (List<Valoracion>) -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de que esta URL es la correcta
+            .baseUrl("http://192.168.0.26:8080/dogidog/")  // URL de tu API
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -588,20 +645,29 @@ class MapsFragment : Fragment() {
             override fun onResponse(call: Call<List<Valoracion>>, response: Response<List<Valoracion>>) {
                 if (response.isSuccessful) {
                     val valoraciones = response.body() ?: emptyList()
-                    val numValoraciones = valoraciones.size // Contamos cuántas valoraciones tiene el usuario
+                    Log.d("ValoracionesAPI", "Valoraciones obtenidas: $valoraciones")
 
-                    // Ahora tienes el número de valoraciones, puedes actualizar el perfil del usuario local o hacer lo que necesites
-                    actualizarNumValoraciones(usuarioId, numValoraciones) // Método para actualizar el contador en el servidor o UI
+                    if (valoraciones.isEmpty()) {
+                        Log.d("ValoracionesAPI", "El usuario no tiene valoraciones.")
+                    }
+
+                    callback(valoraciones) // Llamamos al callback con las valoraciones obtenidas
                 } else {
+                    // Mostrar detalles sobre la respuesta si falla
+                    Log.e("ValoracionesAPI", "Error en la respuesta: ${response.code()} - ${response.message()}")
                     Toast.makeText(requireContext(), "Error al obtener las valoraciones", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Valoracion>>, t: Throwable) {
-                Toast.makeText(requireContext(), "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                Log.e("ValoracionesAPI", "Fallo en la conexión: ${t.message}")
+                Toast.makeText(requireContext(), "Error en la conexión: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
+
+
 
     private fun actualizarNumValoraciones(usuarioId: Int, numValoraciones: Int) {
         val sharedPreferences = requireContext().getSharedPreferences("UsuarioPreferences", Context.MODE_PRIVATE)
@@ -653,141 +719,96 @@ class MapsFragment : Fragment() {
         handler.post(runnable) // Empieza a actualizar usuarios cada 5 minutos
     }
 
-    fun obtenerUsuariosYMostrarEnMapa() {
+    fun obtenerUsuariosYRecorridosYMostrarEnMapa() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de usar la URL correcta
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val service = retrofit.create(ApiService::class.java)
-        service.obtenerTodosLosUsuarios().enqueue(object : Callback<List<Usuario>> {
-            override fun onResponse(call: Call<List<Usuario>>, response: Response<List<Usuario>>) {
+
+        // Limpiar marcadores existentes
+        googleMapGlobal?.clear()
+
+        // Obtener recorridos activos (ya incluyen usuario y mascota)
+        service.obtenerRecorridosActivos().enqueue(object : Callback<List<Recorrido>> {
+            override fun onResponse(call: Call<List<Recorrido>>, response: Response<List<Recorrido>>) {
                 if (response.isSuccessful) {
-                    val usuarios = response.body() ?: return
-                    Log.d("Usuarios", "Usuarios obtenidos: $usuarios") // Verifica que los usuarios son los correctos
+                    val recorridos = response.body() ?: return
+                    Log.d("Recorridos", "Recorridos obtenidos: $recorridos")
 
-                    // Obtener el ID de tu usuario actual desde SharedPreferences
-                    val sharedPreferences = requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                    val usuarioIdActual = sharedPreferences.getInt("usuario_id", -1) // Asegúrate de guardar este valor al hacer login
+                    for (recorrido in recorridos) {
+                        val usuario = recorrido.mascota?.usuario
+                        val mascota = recorrido.mascota
 
-                    // Limpiar los marcadores existentes
-                    googleMapGlobal?.clear()  // Elimina todos los marcadores anteriores
-
-                    // Recorrer la lista de usuarios y agregar marcadores para los demás usuarios
-                    for (usuario in usuarios) {
-                        Log.d("Usuarios", "Coordenadas: ${usuario.latitud}, ${usuario.longitud}") // Verifica que las coordenadas son correctas
-                        if (usuario.latitud != null && usuario.longitud != null && usuario.id != usuarioIdActual) {
-                            // Si el usuario no es el actual, agregar su marcador
+                        if (usuario?.latitud != null && usuario.longitud != null && usuario.id != obtenerUsuarioLocal()!!.id) {
                             val latLng = LatLng(usuario.latitud, usuario.longitud)
-
                             val originalBitmap = BitmapFactory.decodeResource(resources, R.drawable.bordercollie)
                             val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 80, 80, false)
                             val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
 
-                            // Agregar marcador para cada usuario en el mapa
                             val marker = googleMapGlobal?.addMarker(
                                 MarkerOptions()
                                     .position(latLng)
                                     .title(usuario.usuario)
-                                    .icon(customIcon) // Usar la imagen personalizada como ícono
+                                    .icon(customIcon)
                             )
 
-                            // Asociar el objeto Usuario con el marcador
-                            marker?.tag = usuario
-                            Log.d("Usuarios", "Marcador añadido para el usuario: ${usuario.usuario}")
+                            marker?.tag = recorrido
                         }
                     }
 
-                    // Configurar el InfoWindowAdapter para mostrar los datos de cada usuario al hacer clic
                     googleMapGlobal?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
                         override fun getInfoWindow(marker: Marker): View? = null
 
                         override fun getInfoContents(marker: Marker): View {
                             val view = layoutInflater.inflate(R.layout.info_window, null)
+                            val recorrido = marker.tag as? Recorrido ?: return view
+                            val mascota = recorrido.mascota
+                            val usuario = mascota?.usuario
 
-                            // Obtener el usuario asociado al marcador
-                            val usuario = marker.tag as? Usuario ?: return view // Verificar que el marcador tenga un usuario asociado
+                            view.findViewById<TextView>(R.id.tvUsername).text = "${usuario?.usuario} 🐾"
+                            view.findViewById<TextView>(R.id.tvWalkingWith).text = "Paseando con ${mascota?.nombre}"
+                            view.findViewById<ImageView>(R.id.ivPet).setImageResource(R.drawable.bordercollie)
+                            view.findViewById<ImageView>(R.id.ivUserProfile).setImageResource(R.drawable.bordercollie)
+                            view.findViewById<TextView>(R.id.tvPetName).text = mascota.nombre
+                            view.findViewById<TextView>(R.id.tvPetBreed).text = mascota.raza.nombre
+                            // Estrellas (puedes adaptar según valoraciones reales)
 
-                            // Obtener la valoración del usuario
-                            val valoracion = usuario.valoracion ?: 0
-                            view.findViewById<TextView>(R.id.tvNumReviews).text = "(0 opiniones)"
 
-                            obtenerValoracionesDelUsuario(usuario.id) { numValoraciones ->
-                                // Actualizar el número de valoraciones en la UI
-                                view.findViewById<TextView>(R.id.tvNumReviews).text = "($numValoraciones opiniones)"
-                            }
 
-                            // Asignar nombre de usuario y su foto
-                            view.findViewById<TextView>(R.id.tvUsername).text = "${usuario.usuario} 🐾"
-                            view.findViewById<ImageView>(R.id.ivUserProfile).setImageResource(R.drawable.bordercollie) // Foto del usuario
-                            view.findViewById<ImageView>(R.id.ivPet).setImageResource(R.drawable.bordercollie) // Foto de la mascota
+                            var valoracion: Int = usuario?.valoracion ?: 0
 
-                            // Asignar las estrellas según la valoración
-                            val star1 = view.findViewById<ImageView>(R.id.star1)
-                            val star2 = view.findViewById<ImageView>(R.id.star2)
-                            val star3 = view.findViewById<ImageView>(R.id.star3)
-                            val star4 = view.findViewById<ImageView>(R.id.star4)
-                            val star5 = view.findViewById<ImageView>(R.id.star5)
 
-                            // Mostrar las estrellas según la valoración
-                            when (valoracion) {
-                                1 -> {
-                                    star1.setImageResource(R.drawable.star_filled)
-                                    star2.setImageResource(R.drawable.star_empty)
-                                    star3.setImageResource(R.drawable.star_empty)
-                                    star4.setImageResource(R.drawable.star_empty)
-                                    star5.setImageResource(R.drawable.star_empty)
-                                }
-                                2 -> {
-                                    star1.setImageResource(R.drawable.star_filled)
-                                    star2.setImageResource(R.drawable.star_filled)
-                                    star3.setImageResource(R.drawable.star_empty)
-                                    star4.setImageResource(R.drawable.star_empty)
-                                    star5.setImageResource(R.drawable.star_empty)
-                                }
-                                3 -> {
-                                    star1.setImageResource(R.drawable.star_filled)
-                                    star2.setImageResource(R.drawable.star_filled)
-                                    star3.setImageResource(R.drawable.star_filled)
-                                    star4.setImageResource(R.drawable.star_empty)
-                                    star5.setImageResource(R.drawable.star_empty)
-                                }
-                                4 -> {
-                                    star1.setImageResource(R.drawable.star_filled)
-                                    star2.setImageResource(R.drawable.star_filled)
-                                    star3.setImageResource(R.drawable.star_filled)
-                                    star4.setImageResource(R.drawable.star_filled)
-                                    star5.setImageResource(R.drawable.star_empty)
-                                }
-                                5 -> {
-                                    star1.setImageResource(R.drawable.star_filled)
-                                    star2.setImageResource(R.drawable.star_filled)
-                                    star3.setImageResource(R.drawable.star_filled)
-                                    star4.setImageResource(R.drawable.star_filled)
-                                    star5.setImageResource(R.drawable.star_filled)
-                                }
-                                else -> {
-                                    star1.setImageResource(R.drawable.star_empty)
-                                    star2.setImageResource(R.drawable.star_empty)
-                                    star3.setImageResource(R.drawable.star_empty)
-                                    star4.setImageResource(R.drawable.star_empty)
-                                    star5.setImageResource(R.drawable.star_empty)
-                                }
+                            val stars = listOf(
+                                view.findViewById<ImageView>(R.id.star1),
+                                view.findViewById<ImageView>(R.id.star2),
+                                view.findViewById<ImageView>(R.id.star3),
+                                view.findViewById<ImageView>(R.id.star4),
+                                view.findViewById<ImageView>(R.id.star5)
+                            )
+
+                            for (i in stars.indices) {
+                                stars[i].setImageResource(
+                                    if (i < valoracion) R.drawable.star_filled else R.drawable.star_empty
+                                )
                             }
 
                             return view
                         }
                     })
+
                 } else {
-                    Toast.makeText(requireContext(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error al obtener recorridos", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<List<Usuario>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Recorrido>>, t: Throwable) {
                 Toast.makeText(requireContext(), "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 
 
 }

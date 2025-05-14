@@ -18,14 +18,22 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dogidog.R
 import com.example.dogidog.adapters.DogibotAdapter
+import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Mensaje
+import com.example.dogidog.dataModels.Pregunta
 import com.example.dogidog.databinding.FragmentDogibotBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,7 +47,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
     private lateinit var tts: TextToSpeech
     private var numeroSecreto: Int? = null // Número secreto elegido por el bot
     private var jugando: Boolean = false // Estado del juego
-
+    private var enviandoMensaje = false
     private var bienvenidaEnviada = false  // Variable para controlar si el mensaje de bienvenida ya ha sido enviado
 
     override fun onCreateView(
@@ -106,22 +114,22 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
 
     // Método para enviar el mensaje
     private fun enviarMensaje() {
+        if (enviandoMensaje) return
         val mensajeTexto = binding.edtEscribir.text.toString().trim()
         if (mensajeTexto.isNotEmpty()) {
-            // Agregar mensaje del usuario
+            enviandoMensaje = true
             adapter.agregarMensaje(Mensaje(mensajeTexto, true, R.drawable.bordercollie))
             binding.edtEscribir.text.clear()
             binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
 
-            // Simular respuesta del bot
-            val respuestaBot = responderBot()
-            adapter.agregarMensaje(Mensaje(respuestaBot, false, R.drawable.bordercollie))
-            hablar(respuestaBot) // Respuesta del bot hablada
+            // Guardar el mensaje en la lista
+          //  mensajes.add(Mensaje(mensajeTexto, true, R.drawable.bordercollie))
 
-            // Desplazar el RecyclerView hacia el mensaje del bot
-            binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+            // Paso 1: Consultar API
+            buscarPreguntaEnApi(mensajeTexto)
         }
     }
+
 
     // Método para hablar usando Text-to-Speech
     private fun hablar(texto: String) {
@@ -294,4 +302,99 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
 
+
+    private fun buscarPreguntaEnApi(texto: String) {
+        // Eliminar los signos repetidos y recortar espacios extra
+        val textoLimpio = texto
+            .replace("¿¿", "¿")
+            .replace("??", "?")
+            .replace("¡¡", "¡")
+            .replace("!!", "!")
+            .trim()
+
+        // Si el texto está vacío, no agregar nada
+        if (textoLimpio.isEmpty()) {
+            // Aquí se podría hacer algo como retornar o simplemente no hacer nada
+            return
+        }
+
+        // Agregar los signos de apertura y cierre solo si es necesario
+        val textoConSignos = when {
+            textoLimpio.startsWith("¿") && textoLimpio.endsWith("?") -> textoLimpio  // Ya tiene los signos correctos
+            textoLimpio.startsWith("¿") -> "$textoLimpio?"  // Agregar solo el signo de cierre
+            textoLimpio.endsWith("?") -> "¿$textoLimpio"  // Agregar solo el signo de apertura
+            else -> "¿$textoLimpio?"  // Agregar ambos signos
+        }
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Usa tu IP o localhost si es web
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        val call = service.buscarPregunta(textoConSignos)
+        call.enqueue(object : Callback<Pregunta> {
+            override fun onResponse(call: Call<Pregunta?>, response: Response<Pregunta?>) {
+                val preguntaResponse = response.body()
+
+                if (preguntaResponse != null && !preguntaResponse.respuesta.isNullOrBlank()) {
+                    mostrarRespuestaBot(preguntaResponse.respuesta!!)
+                } else {
+                    buscarRespuestaLocal(texto)
+                }
+            }
+
+            override fun onFailure(call: Call<Pregunta>, t: Throwable) {
+                val error = "Ocurrió un error al buscar la respuesta: ${t.message}"
+                adapter.agregarMensaje(Mensaje(error, false, R.drawable.bordercollie))
+                hablar(error)
+                binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+            }
+        })
+    }
+
+
+    private fun buscarRespuestaLocal(pregunta: String) {
+        val respuesta = responderBot()
+
+        if (respuesta == "Lo siento, no entiendo eso. ¿Puedes preguntarme otra cosa?") {
+            ofrecerEnviarAlSoporte(pregunta)
+        } else {
+            mostrarRespuestaBot(respuesta)
+        }
+    }
+    private fun mostrarRespuestaBot(texto: String) {
+        val mensaje = Mensaje(texto, false, R.drawable.bordercollie)
+        adapter.agregarMensaje(mensaje)
+        //mensajes.add(mensaje)
+        hablar(texto)
+        binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+        enviandoMensaje = false
+    }
+    private fun ofrecerEnviarAlSoporte(pregunta: String) {
+        val mensaje = "No tengo respuesta para eso. ¿Quieres que envíe tu pregunta al servicio de atención al cliente?"
+        mostrarRespuestaBot(mensaje)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("¿Enviar pregunta?")
+            .setMessage("¿Deseas que enviemos tu pregunta al equipo de soporte?")
+            .setPositiveButton("Sí") { _, _ ->
+                enviarPreguntaAlSoporte(pregunta)
+            }
+            .setNegativeButton("No") { _, _ ->
+                noEnviarPreguntaAlSoporte(pregunta)
+            }
+            .show()
+    }
+
+    private fun enviarPreguntaAlSoporte(pregunta: String) {
+        val mensaje = "Tu pregunta ha sido enviada al servicio de atención al cliente. Te responderemos pronto."
+        mostrarRespuestaBot(mensaje)
+    }
+
+    private fun noEnviarPreguntaAlSoporte(pregunta: String) {
+        val mensaje = "Tu pregunta no ha sido enviada. Espero serle de ayuda pronto, poco a poco aprendo"
+        mostrarRespuestaBot(mensaje)
+    }
 }

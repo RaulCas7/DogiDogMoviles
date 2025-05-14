@@ -128,8 +128,8 @@ class NotificacionesFragment : Fragment() {
                 override fun onResponse(call: Call<MutableList<Notificacion>>, response: Response<MutableList<Notificacion>>) {
                     if (response.isSuccessful) {
                         val listaNotificaciones = response.body() ?: mutableListOf()
-                        // Actualizar la lista de notificaciones
                         notificacionesAdapter.actualizarLista(listaNotificaciones)
+                        mostrarEstadoVacio(listaNotificaciones.isEmpty()) // ⬅️ Añadido
                     } else {
                         Toast.makeText(requireContext(), "Error al obtener notificaciones", Toast.LENGTH_SHORT).show()
                     }
@@ -232,5 +232,7 @@ class NotificacionesFragment : Fragment() {
             notificacionesNoLeidas.size // Pasamos el número de notificaciones no leídas
         )
     }
-
+    private fun mostrarEstadoVacio(listaVacia: Boolean) {
+        binding.textoSinNotificaciones.visibility = if (listaVacia) View.VISIBLE else View.GONE
+    }
 }

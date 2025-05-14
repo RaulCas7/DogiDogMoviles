@@ -1,7 +1,6 @@
 package com.example.dogidog.dataModels
 
 data class Valoracion(
-    val id: Int,
     val puntuacion: Int,
     val comentario: String?,
     val fechaValoracion: String,  // Puede ser una cadena en formato ISO
