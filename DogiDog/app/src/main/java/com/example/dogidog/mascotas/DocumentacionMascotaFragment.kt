@@ -132,35 +132,31 @@ class DocumentacionFragment : Fragment() {
     }
 
     private fun configurarToolbar(mascota: Mascota) {
-        // Acceder al ActionBar de la Activity que contiene este Fragment
-        (activity as AppCompatActivity).supportActionBar?.apply {
-            // Crear el TextView personalizado
-            val titleTextView = TextView(requireContext()).apply {
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar ?: return
 
-                text = mascota.nombre
-                setTextColor(Color.WHITE) // Establecer el color blanco
-                setTypeface(null, Typeface.BOLD) // Poner el texto en negrita
-
-                // Obtener la altura de la ActionBar (Toolbar)
-                val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
-
-                // Ajustar el tamaño del texto proporcionalmente
-                val textSize = (actionBarHeight * 0.5f).toFloat() // El tamaño del texto será el 50% de la altura
-                this.textSize = textSize / resources.displayMetrics.density // Convertir a SP
-            }
-
-            // Establecer el título con el TextView personalizado
-            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-            customView = titleTextView
-
-            // Cambiar el fondo de la ActionBar (Toolbar)
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
-
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24) // Usa tu propio ícono de flecha
-
-            setHasOptionsMenu(true)
+        // Limpiar cualquier customView previa
+        actionBar.customView?.let {
+            (it.parent as? ViewGroup)?.removeView(it)
         }
+
+        // Crear el TextView personalizado
+        val titleTextView = TextView(requireContext()).apply {
+            text = mascota.nombre
+            setTextColor(Color.WHITE)
+            setTypeface(null, Typeface.BOLD)
+            val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+            val textSize = (actionBarHeight * 0.5f).toFloat()
+            this.textSize = textSize / resources.displayMetrics.density
+        }
+
+        actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        actionBar.customView = titleTextView
+
+        actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+
+        setHasOptionsMenu(true)
     }
 
 

@@ -135,9 +135,8 @@ class MascotaPrincipalFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     0 -> replaceFragment(MascotaInfoFragment(), mascota)
-                    1 -> replaceFragment(MascotaGaleriaFragment(), mascota)
-                    2 -> replaceFragment(GraficaPesoFragment(), mascota)
-                    3 -> replaceFragment(DocumentacionFragment(), mascota)
+                    1 -> replaceFragment(GraficaPesoFragment(), mascota)
+                    2 -> replaceFragment(DocumentacionFragment(), mascota)
                 }
             }
 
@@ -147,12 +146,9 @@ class MascotaPrincipalFragment : Fragment() {
                         Log.d("MascotaPrincipal", "Pestaña Info deseleccionada")
                     }
                     1 -> {
-                        Log.d("MascotaPrincipal", "Pestaña Fotos deseleccionada")
-                    }
-                    2 -> {
                         Log.d("MascotaPrincipal", "Pestaña Peso deseleccionada")
                     }
-                    3 -> {
+                    2 -> {
                         Log.d("MascotaPrincipal", "Pestaña Documentación deseleccionada")
                     }
                 }

@@ -145,10 +145,37 @@ class NotificacionesFragment : Fragment() {
     // Cambiar el estado de la notificación (por ejemplo, marcar como leída)
     private fun cambiarEstadoNotificacion(notificacion: Notificacion) {
         notificacion.leida = !notificacion.leida
+
+        actualizarNotificacionEnApi(notificacion.id, notificacion) { success ->
+            if (success) {
+                Toast.makeText(context, "Notificación actualizada correctamente", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Error al actualizar la notificación", Toast.LENGTH_SHORT).show()
+            }
+        }
         val position = notificacionesAdapter.listaNotificaciones.indexOf(notificacion)
         if (position != -1) {
             notificacionesAdapter.notifyItemChanged(position)
         }
+    }
+
+    fun actualizarNotificacionEnApi(id: Int, notificacion: Notificacion, onResult: (Boolean) -> Unit) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        service.actualizarNotificacion(id, notificacion).enqueue(object : Callback<Notificacion> {
+            override fun onResponse(call: Call<Notificacion>, response: Response<Notificacion>) {
+                onResult(response.isSuccessful)
+            }
+
+            override fun onFailure(call: Call<Notificacion>, t: Throwable) {
+                onResult(false)
+            }
+        })
     }
 
     // Obtener el usuario local desde SharedPreferences
@@ -161,8 +188,8 @@ class NotificacionesFragment : Fragment() {
         val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
         val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
         val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
-
-        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Preguntas=$contadorPreguntas")
+        val valoracion = prefs.getInt("usuario_valoracion", 0)
+        val foto = prefs.getInt("usuario_foto", 0) // 🆕 Añadimos la foto del usuario
 
         return if (id != -1 && usuario != null && email != null && password != null) {
             val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
@@ -175,10 +202,11 @@ class NotificacionesFragment : Fragment() {
                 password = password,
                 contadorPreguntas = contadorPreguntas,
                 latitud = latitudDouble,
-                longitud = longitudDouble
+                longitud = longitudDouble,
+                valoracion = valoracion,
+                foto = foto // 🆕 Añadimos la foto al objeto Usuario
             )
         } else {
-            Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null
         }
     }

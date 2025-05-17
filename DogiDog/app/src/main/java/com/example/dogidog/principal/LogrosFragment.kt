@@ -1,10 +1,13 @@
 package com.example.dogidog.principal
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -25,6 +28,7 @@ import com.example.dogidog.dataModels.Logro
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.UsuariosLogro
 import com.example.dogidog.databinding.FragmentLogrosBinding
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -65,9 +69,8 @@ class LogrosFragment : Fragment() {
     }
 
     private fun obtenerLogrosDisponibles() {
-        // Crear cliente Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -76,10 +79,21 @@ class LogrosFragment : Fragment() {
         service.obtenerLogros().enqueue(object : Callback<List<Logro>> {
             override fun onResponse(call: Call<List<Logro>>, response: Response<List<Logro>>) {
                 if (response.isSuccessful) {
-                    val logros = response.body() ?: emptyList()
-                    this@LogrosFragment.logros.clear()  // Limpiar la lista antes de añadir los nuevos
-                    this@LogrosFragment.logros.addAll(logros)
-                    logrosAdapter.setLogros(logros)
+                    val logrosServidor = response.body() ?: emptyList()
+                    logros.clear()
+                    logros.addAll(logrosServidor)
+
+                    // Por cada logro, cargar su emblema
+                    for (logro in logrosServidor) {
+                        obtenerEmblemaLogro(logro.id) { bitmap ->
+                            logro.emblemaBitmap = bitmap
+                            // Notificar cambio en el adaptador para redibujar la lista
+                            logrosAdapter.notifyDataSetChanged()
+                        }
+                    }
+
+                    // Al menos mostrar la lista mientras se cargan los emblemas
+                    logrosAdapter.setLogros(logrosServidor)
                 }
             }
 
@@ -131,7 +145,7 @@ class LogrosFragment : Fragment() {
         val password = prefs.getString("usuario_password", null)
 
         return if (id != -1 && usuario != null && email != null && password != null) {
-            Usuario(id, usuario, email, password, 0,null,null)
+            Usuario(id, usuario, email, password, 0,null,null,0,0)
         } else {
             null
         }
@@ -186,6 +200,31 @@ class LogrosFragment : Fragment() {
         menuItem.isVisible = false
         menuItemOptions.isVisible = true
         setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
+    }
+    private fun obtenerEmblemaLogro(id: Int, onResult: (Bitmap) -> Unit) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        service.obtenerEmblemaLogro(id).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    response.body()?.byteStream()?.let { inputStream ->
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        onResult(bitmap)  // Devolvemos el bitmap al callback
+                    }
+                } else {
+                    Log.e("CargarEmblema", "Error al obtener el emblema")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("CargarEmblema", "Error en la conexión: ${t.message}")
+            }
+        })
     }
 
 

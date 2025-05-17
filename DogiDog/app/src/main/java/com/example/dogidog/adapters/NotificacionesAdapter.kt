@@ -12,6 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dogidog.dataModels.Notificacion
 import com.example.dogidog.R
+import com.example.dogidog.apiServices.ApiService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -47,7 +53,15 @@ class NotificacionesAdapter(
                 else Color.TRANSPARENT // Fondo normal
             )
 
+
+
             if (estaPulsada) {
+                imagen.setImageResource(R.drawable.baseline_mark_email_read_24)
+            } else {
+                imagen.setImageResource(R.drawable.baseline_mark_email_unread_24)
+            }
+
+            if(notificacion.leida){
                 imagen.setImageResource(R.drawable.baseline_mark_email_read_24)
             } else {
                 imagen.setImageResource(R.drawable.baseline_mark_email_unread_24)
@@ -129,14 +143,37 @@ class NotificacionesAdapter(
             return
         }
 
-        listaNotificaciones.removeAll(seleccionadas) // Borra de la lista principal
-        seleccionadas.clear() // Limpia la lista de seleccionadas
-        enModoSeleccion = false // Salir del modo selección
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de poner tu URL real
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        seleccionadas.forEach { notificacion ->
+            apiService.eliminarNotificacion(notificacion.id).enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        Log.d("ADAPTER", "✅ Notificación ${notificacion.id} eliminada del servidor.")
+                    } else {
+                        Log.e("ADAPTER", "❌ Falló al eliminar la notificación ${notificacion.id} (código: ${response.code()})")
+                    }
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e("ADAPTER", "❌ Error de red al eliminar notificación ${notificacion.id}: ${t.message}")
+                }
+            })
+        }
+
+        // Elimina localmente después de disparar las peticiones
+        listaNotificaciones.removeAll(seleccionadas)
+        seleccionadas.clear()
+        enModoSeleccion = false
         onSelectionModeChanged(false)
-
         notifyDataSetChanged()
-
     }
+
 
     fun formatearFecha(fechaCreacion: String): String {
         val instant = Instant.parse(fechaCreacion)

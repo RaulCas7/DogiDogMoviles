@@ -26,17 +26,6 @@
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 
-    <!-- Imagen del perfil circular -->
-    <ImageView
-        android:id="@+id/ivUserProfile"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center"
-        android:src="@drawable/bordercollie"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/icono_circular"
-        android:padding="2dp" />
 
     <!-- Imagen de la mascota ajustada al espacio -->
     <ImageView

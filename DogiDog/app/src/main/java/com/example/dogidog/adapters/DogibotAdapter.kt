@@ -31,19 +31,28 @@ class DogibotAdapter(private val mensajes: MutableList<Mensaje>, private val usu
     inner class MensajeViewHolder(private val binding: ItemMensajeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(mensaje: Mensaje) {
             if (mensaje.esUsuario) {
-                // Asegurar que el usuario está alineado a la derecha
                 binding.mensajeUsuario.text = mensaje.texto
                 binding.nombreUsuario.text = usuarioNombre
                 binding.mensajeUsuarioLayout.visibility = View.VISIBLE
                 binding.mensajeBotLayout.visibility = View.GONE
+
+                // Puedes poner la imagen del usuario si quieres aquí también
+                binding.imgUsuario.setImageResource(R.drawable.bordercollie)
+
             } else {
-                // Asegurar que el bot está alineado a la izquierda
                 binding.mensajeBot.text = mensaje.texto
                 binding.nombreBot.text = "Dogibot"
                 binding.mensajeBotLayout.visibility = View.VISIBLE
                 binding.mensajeUsuarioLayout.visibility = View.GONE
+
+                if (mensaje.imagenPerfil != null) {
+                    binding.imgBot.setImageBitmap(mensaje.imagenPerfil)
+                } else {
+                    binding.imgBot.setImageResource(R.drawable.bordercollie) // Imagen por defecto
+                }
             }
         }
+
     }
 
 

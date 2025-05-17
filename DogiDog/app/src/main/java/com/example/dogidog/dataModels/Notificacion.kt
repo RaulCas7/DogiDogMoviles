@@ -4,7 +4,7 @@ import java.time.Instant
 
 data class Notificacion (
     val id: Int,
-    val usuarioId: Int,
+    val usuario: Usuario,
     val mascotaId: Int?,
     val titulo: String,
     val mensaje: String,

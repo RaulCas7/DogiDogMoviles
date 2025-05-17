@@ -269,6 +269,7 @@ class AnadirMascotaFragment : Fragment() {
         val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
         val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
         val valoracion = prefs.getInt("usuario_valoracion", 0)
+        val foto = prefs.getInt("usuario_foto", 0) // 🆕 Añadimos la foto del usuario
 
         return if (id != -1 && usuario != null && email != null && password != null) {
             val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
@@ -282,12 +283,14 @@ class AnadirMascotaFragment : Fragment() {
                 contadorPreguntas = contadorPreguntas,
                 latitud = latitudDouble,
                 longitud = longitudDouble,
-                valoracion = valoracion
+                valoracion = valoracion,
+                foto = foto // 🆕 Añadimos la foto al objeto Usuario
             )
         } else {
             null
         }
     }
+
 
     private fun configurarToolbar() {
         (activity as AppCompatActivity).supportActionBar?.apply {

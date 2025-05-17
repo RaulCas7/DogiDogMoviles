@@ -72,10 +72,14 @@ class ConfiguracionFragment : Fragment() {
 
         binding.tvNombreUsuario.text = obtenerUsuarioLocal()!!.usuario
 
-        sharedPreferences.getString("imagenBot", null)?.let {
-            val uri = Uri.parse(it)
-            binding.imgDogiBot.setImageURI(uri)
-            binding.imgFotoUsuario.setImageURI(uri)
+        val usuario = obtenerUsuarioLocal()
+        val idLogro = usuario?.foto
+
+        idLogro?.let { id ->
+            obtenerEmblemaLogro(id) { bitmap ->
+                binding.imgDogiBot.setImageBitmap(bitmap)
+                binding.imgFotoUsuario.setImageBitmap(bitmap)
+            }
         }
 
         // Cargar switches
@@ -240,31 +244,6 @@ class ConfiguracionFragment : Fragment() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            val uri = data.data ?: return
-            if (requestCode == PICK_IMAGEN) {
-                // Guardamos la misma imagen para usuario y DogiBot
-                binding.imgFotoUsuario.setImageURI(uri)
-                binding.imgDogiBot.setImageURI(uri)
-
-                // Actualizamos los SharedPreferences con la nueva foto
-                sharedPreferences.edit().putString("imagenBot", uri.toString()).apply()
-
-                // Actualizamos el usuario local (SharedPreferences)
-                val usuario = obtenerUsuarioLocal()
-                usuario?.let {
-                    it.foto = uri.toString() // Actualizamos la foto
-                    guardarUsuarioLocal(it)  // Guardamos el usuario actualizado
-
-                    // Finalmente, hacemos la llamada a la API para actualizar la foto del usuario en el servidor
-                    actualizarUsuarioAPI(it)  // Llamada a la API para actualizar
-                }
-            }
-        }
-    }
-
     private fun configurarToolbar() {
         // Si usas una Toolbar en lugar de ActionBar, accedes a ella directamente
         (activity as AppCompatActivity).apply {
@@ -315,8 +294,10 @@ class ConfiguracionFragment : Fragment() {
         (activity as? PantallaPrincipalActivity)?.binding?.navegacion?.visibility = View.VISIBLE
     }
 
+    // Recupera el usuario desde SharedPreferences, incluyendo la foto
     private fun obtenerUsuarioLocal(): Usuario? {
         val prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
         val id = prefs.getInt("usuario_id", -1)
         val usuario = prefs.getString("usuario", null)
         val email = prefs.getString("usuario_email", null)
@@ -324,8 +305,8 @@ class ConfiguracionFragment : Fragment() {
         val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
         val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
         val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
-        val valoracion = prefs.getInt("usuario_valoracion", 0)  // Nuevo campo de valoración
-        val foto = prefs.getString("usuario_foto", null) // Aquí recogemos la foto del usuario
+        val valoracion = prefs.getInt("usuario_valoracion", 0)
+        val foto = prefs.getInt("usuario_foto", 0)  // Campo foto
 
         Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Preguntas=$contadorPreguntas, Valoración=$valoracion, Foto=$foto")
 
@@ -337,49 +318,47 @@ class ConfiguracionFragment : Fragment() {
                 id = id,
                 usuario = usuario,
                 email = email,
-                password = password,  // Asegúrate que la contraseña esté en MD5
+                password = password,
                 contadorPreguntas = contadorPreguntas,
                 latitud = latitudDouble,
                 longitud = longitudDouble,
-                valoracion = valoracion, // Agregar la valoración al objeto Usuario
-                foto = foto // Agregar la foto al objeto Usuario
+                valoracion = valoracion,
+                foto = foto // ← Aquí va el nombre de la imagen, por ejemplo: "gojo.png"
             )
         } else {
             Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null
         }
     }
+
+    // Guarda el usuario actualizado en SharedPreferences, incluyendo la foto
     private fun guardarUsuarioLocal(usuario: Usuario) {
         val prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
         with(prefs.edit()) {
-            // Guardamos los campos no nulos
             putInt("usuario_id", usuario.id)
             putString("usuario", usuario.usuario)
             putString("usuario_email", usuario.email)
             putString("usuario_password", usuario.password)
             putInt("usuario_preguntas", usuario.contadorPreguntas)
 
-            // Guardamos latitud y longitud solo si no son nulos
             usuario.latitud?.let {
                 putFloat("usuario_latitud", it.toFloat())
             }
             usuario.longitud?.let {
                 putFloat("usuario_longitud", it.toFloat())
             }
-
-            // Guardamos el campo de valoración solo si no es nulo
             usuario.valoracion?.let {
                 putInt("usuario_valoracion", it)
             }
-
-            // Guardamos foto solo si no es nulo
             usuario.foto?.let {
-                putString("usuario_foto", it)
+                putInt("usuario_foto", it) // ← Guarda el nombre de la imagen
             }
 
-            apply()  // Guarda los cambios de manera asíncrona
+            apply()
         }
     }
+
     private fun actualizarUI(usuario: Usuario) {
 
         // Actualizar los valores en los campos de la UI
@@ -497,8 +476,17 @@ class ConfiguracionFragment : Fragment() {
             setLogros(logros)
             setLogrosDesbloqueados(logrosDesbloqueados)
             setOnEmblemaSeleccionadoListener(object : LogrosAdapterImage.OnEmblemaSeleccionadoListener {
-                override fun onEmblemaSeleccionado(bitmap: Bitmap) {
+                override fun onEmblemaSeleccionado(bitmap: Bitmap, idLogro: Int) {
                     binding.imgFotoUsuario.setImageBitmap(bitmap)
+                    binding.imgDogiBot.setImageBitmap(bitmap)
+
+                    val usuario = obtenerUsuarioLocal()
+                    usuario?.let {
+                        it.foto = idLogro  // o mejor: cambia `foto` a tipo Int si aún no lo hiciste
+                        guardarUsuarioLocal(it)
+                        actualizarUsuarioAPI(it)
+                    }
+
                     dialog.dismiss()
                 }
             })
@@ -511,6 +499,35 @@ class ConfiguracionFragment : Fragment() {
     }
 
 
+    private fun actualizarImagenPerfil(usuario: Usuario, nuevaFoto: Int) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        // Actualizamos el campo foto y mandamos el objeto Usuario
+        usuario.foto = nuevaFoto
+
+        val call = service.actualizarUsuario(usuario.id, usuario)
+
+        call.enqueue(object : Callback<Usuario> {
+            override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Imagen actualizada con éxito", Toast.LENGTH_SHORT).show()
+                    usuario.foto = nuevaFoto
+                    guardarUsuarioLocal(usuario)
+                } else {
+                    Toast.makeText(context, "Error al actualizar imagen", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Usuario>, t: Throwable) {
+                Toast.makeText(context, "Fallo en la conexión", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
     private fun obtenerLogrosDisponibles(onComplete: () -> Unit) {
         val retrofit = Retrofit.Builder()
@@ -527,12 +544,25 @@ class ConfiguracionFragment : Fragment() {
                     logros.clear()
                     logros.addAll(nuevosLogros)
 
-                    nuevosLogros.forEach { logro ->
-                        obtenerEmblemaLogro(logro.id)
+                    if (nuevosLogros.isEmpty()) {
+                        logrosAdapter.setLogros(logros)
+                        onComplete()
+                        return
                     }
 
-                    logrosAdapter.setLogros(logros)
-                    onComplete()
+                    var imagenesCargadas = 0
+
+                    nuevosLogros.forEach { logro ->
+                        obtenerEmblemaLogro(logro.id) { bitmap ->
+                            logro.emblemaBitmap = bitmap
+                            imagenesCargadas++
+                            if (imagenesCargadas == nuevosLogros.size) {
+                                logrosAdapter.setLogros(logros)
+                                onComplete()
+                            }
+                        }
+                    }
+
                 } else {
                     Toast.makeText(requireContext(), "Error al obtener logros", Toast.LENGTH_SHORT).show()
                 }
@@ -543,6 +573,7 @@ class ConfiguracionFragment : Fragment() {
             }
         })
     }
+
 
 
 
@@ -563,12 +594,28 @@ class ConfiguracionFragment : Fragment() {
                     logrosDesbloqueados.clear()
                     logrosDesbloqueados.addAll(desbloqueados)
 
-                    desbloqueados.forEach {
-                        obtenerEmblemaLogro(it.logro.id)
+                    if (desbloqueados.isEmpty()) {
+                        logrosAdapter.setLogrosDesbloqueados(logrosDesbloqueados)
+                        onComplete()
+                        return
                     }
 
-                    logrosAdapter.setLogrosDesbloqueados(logrosDesbloqueados)
-                    onComplete()
+                    // Contador de imágenes descargadas
+                    var imagenesCargadas = 0
+
+                    desbloqueados.forEach { usuariosLogro ->
+                        obtenerEmblemaLogro(usuariosLogro.logro.id) { bitmap ->
+                            val logro = logros.find { it.id == usuariosLogro.logro.id }
+                            logro?.emblemaBitmap = bitmap
+
+                            imagenesCargadas++
+                            if (imagenesCargadas == desbloqueados.size) {
+                                logrosAdapter.setLogrosDesbloqueados(logrosDesbloqueados)
+                                onComplete()
+                            }
+                        }
+                    }
+
                 } else {
                     Toast.makeText(requireContext(), "Error al obtener logros desbloqueados", Toast.LENGTH_SHORT).show()
                 }
@@ -581,8 +628,7 @@ class ConfiguracionFragment : Fragment() {
     }
 
 
-
-    private fun obtenerEmblemaLogro(id: Int) {
+    private fun obtenerEmblemaLogro(id: Int, onResult: (Bitmap) -> Unit) {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.0.26:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -593,12 +639,9 @@ class ConfiguracionFragment : Fragment() {
         service.obtenerEmblemaLogro(id).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
-                    val inputStream = response.body()?.byteStream()
-                    inputStream?.let {
-                        val bitmap = BitmapFactory.decodeStream(it)
-                        val logro = logros.find { it.id == id }
-                        logro?.emblemaBitmap = bitmap
-                        logrosAdapter.notifyItemChanged(logros.indexOf(logro))
+                    response.body()?.byteStream()?.let { inputStream ->
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        onResult(bitmap)  // Devolvemos el bitmap al callback
                     }
                 } else {
                     Log.e("CargarEmblema", "Error al obtener el emblema")

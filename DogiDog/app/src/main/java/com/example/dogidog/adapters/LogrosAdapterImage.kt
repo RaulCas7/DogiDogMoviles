@@ -76,13 +76,13 @@ class LogrosAdapterImage : RecyclerView.Adapter<LogrosAdapterImage.LogroViewHold
 
                 // Evento de clic para seleccionar la imagen
                 binding.root.setOnClickListener {
-                    logro.emblemaBitmap?.let { it1 -> listener?.onEmblemaSeleccionado(it1) }
+                    logro.emblemaBitmap?.let { it1 -> listener?.onEmblemaSeleccionado(it1, logro.id) }
                 }
             }
         }
     }
 
     interface OnEmblemaSeleccionadoListener {
-        fun onEmblemaSeleccionado(bitmap: Bitmap)
+        fun onEmblemaSeleccionado(bitmap: Bitmap, nombreImagen: Int)
     }
 }

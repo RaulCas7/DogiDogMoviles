@@ -1,10 +1,14 @@
 package com.example.dogidog.principal
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.speech.tts.TextToSpeech
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -28,13 +32,18 @@ import com.example.dogidog.adapters.DogibotAdapter
 import com.example.dogidog.apiServices.ApiService
 import com.example.dogidog.dataModels.Mensaje
 import com.example.dogidog.dataModels.Pregunta
+import com.example.dogidog.dataModels.Tarea
+import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.databinding.FragmentDogibotBinding
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -43,7 +52,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
     private lateinit var binding: FragmentDogibotBinding
     private lateinit var adapter: DogibotAdapter
     private val mensajes = mutableListOf<Mensaje>()
-    private val usuarioNombre = "Raúl" // Aquí podrías obtener el nombre del usuario logueado
+    private lateinit var usuarioNombre : String
     private lateinit var tts: TextToSpeech
     private var numeroSecreto: Int? = null // Número secreto elegido por el bot
     private var jugando: Boolean = false // Estado del juego
@@ -62,6 +71,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        usuarioNombre = obtenerUsuarioLocal()!!.usuario
         configurarToolbar()
         // Inicializar TTS
         tts = TextToSpeech(requireContext()) { status ->
@@ -86,9 +96,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
 
         // Verificar si el mensaje de bienvenida ya fue enviado
         if (!bienvenidaEnviada) {
-            // Mensaje inicial del bot
-            adapter.agregarMensaje(Mensaje("¡Hola! Soy Dogibot, ¿en qué puedo ayudarte?", false, R.drawable.bordercollie))
-            bienvenidaEnviada = true  // Establecer que el mensaje de bienvenida ya fue enviado
+            mostrarMensajeBienvenida()
         }
 
         // Enviar mensaje con botón
@@ -118,16 +126,86 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
         val mensajeTexto = binding.edtEscribir.text.toString().trim()
         if (mensajeTexto.isNotEmpty()) {
             enviandoMensaje = true
-            adapter.agregarMensaje(Mensaje(mensajeTexto, true, R.drawable.bordercollie))
-            binding.edtEscribir.text.clear()
-            binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
 
-            // Guardar el mensaje en la lista
-          //  mensajes.add(Mensaje(mensajeTexto, true, R.drawable.bordercollie))
+            val usuario = obtenerUsuarioLocal()
+            val idLogro = usuario?.foto
 
-            // Paso 1: Consultar API
-            buscarPreguntaEnApi(mensajeTexto)
+            if (idLogro != null) {
+                obtenerEmblemaLogro(idLogro) { bitmap ->
+                    val mensajeUsuario = Mensaje(mensajeTexto, true, bitmap)
+                    adapter.agregarMensaje(mensajeUsuario)
+                    binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+
+                    binding.edtEscribir.text.clear()
+
+                    // Aquí haces la llamada a la API después de agregar el mensaje
+                    buscarPreguntaEnApi(mensajeTexto)
+                }
+            } else {
+                adapter.agregarMensaje(Mensaje(mensajeTexto, true, null))
+                binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                binding.edtEscribir.text.clear()
+
+                buscarPreguntaEnApi(mensajeTexto)
+            }
         }
+    }
+
+
+
+    private fun mostrarMensajeBienvenida() {
+        if (!bienvenidaEnviada) {
+            val usuario = obtenerUsuarioLocal()
+            val idLogroStr = usuario?.foto
+            val mensajeTexto = "¡Hola! Soy Dogibot, ¿en qué puedo ayudarte?"
+
+            if (idLogroStr != null) {
+                val idLogro = idLogroStr
+                if (idLogro != null) {
+                    obtenerEmblemaLogro(idLogro) { bitmap ->
+                        val mensajeBot = Mensaje(mensajeTexto, false, bitmap)
+                        adapter.agregarMensaje(mensajeBot)
+                        binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                        bienvenidaEnviada = true
+                    }
+                } else {
+                    adapter.agregarMensaje(Mensaje(mensajeTexto, false, null))
+                    binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                    bienvenidaEnviada = true
+                }
+            } else {
+                adapter.agregarMensaje(Mensaje(mensajeTexto, false, null))
+                binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                bienvenidaEnviada = true
+            }
+        }
+    }
+
+    private fun obtenerEmblemaLogro(idLogro: Int, onBitmapLoaded: (Bitmap?) -> Unit) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        service.obtenerEmblemaLogro(idLogro).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val inputStream = response.body()?.byteStream()
+                    val bitmap = inputStream?.let { BitmapFactory.decodeStream(it) }
+                    onBitmapLoaded(bitmap)
+                } else {
+                    Log.e("EmblemaLogro", "Error al obtener el emblema: ${response.code()}")
+                    onBitmapLoaded(null)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("EmblemaLogro", "Error de conexión: ${t.message}")
+                onBitmapLoaded(null)
+            }
+        })
     }
 
 
@@ -327,7 +405,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Usa tu IP o localhost si es web
+            .baseUrl("http://192.168.0.26:8080/dogidog/") // ✅ Esto está correcto
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -336,6 +414,8 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
         val call = service.buscarPregunta(textoConSignos)
         call.enqueue(object : Callback<Pregunta> {
             override fun onResponse(call: Call<Pregunta?>, response: Response<Pregunta?>) {
+                Log.d("API", "Código respuesta: ${response.code()}")
+                Log.d("API", "Cuerpo: ${response.body()?.respuesta}")
                 val preguntaResponse = response.body()
 
                 if (preguntaResponse != null && !preguntaResponse.respuesta.isNullOrBlank()) {
@@ -347,9 +427,30 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
 
             override fun onFailure(call: Call<Pregunta>, t: Throwable) {
                 val error = "Ocurrió un error al buscar la respuesta: ${t.message}"
-                adapter.agregarMensaje(Mensaje(error, false, R.drawable.bordercollie))
-                hablar(error)
-                binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                val usuario = obtenerUsuarioLocal()
+                val idLogroStr = usuario?.foto
+
+                if (idLogroStr != null) {
+                    val idLogro = idLogroStr
+                    if (idLogro != null) {
+                        obtenerEmblemaLogro(idLogro) { bitmap ->
+                            val mensajeError = Mensaje(error, false, bitmap)
+                            adapter.agregarMensaje(mensajeError)
+                            hablar(error)
+                            binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                        }
+                    } else {
+                        val mensajeError = Mensaje(error, false, null)
+                        adapter.agregarMensaje(mensajeError)
+                        hablar(error)
+                        binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                    }
+                } else {
+                    val mensajeError = Mensaje(error, false, null)
+                    adapter.agregarMensaje(mensajeError)
+                    hablar(error)
+                    binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                }
             }
         })
     }
@@ -365,13 +466,27 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
         }
     }
     private fun mostrarRespuestaBot(texto: String) {
-        val mensaje = Mensaje(texto, false, R.drawable.bordercollie)
-        adapter.agregarMensaje(mensaje)
-        //mensajes.add(mensaje)
-        hablar(texto)
-        binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
-        enviandoMensaje = false
+        val usuario = obtenerUsuarioLocal()
+        val idLogro = usuario?.foto
+
+        if (idLogro != null) {
+            obtenerEmblemaLogro(idLogro) { bitmap ->
+                val mensajeBot = Mensaje(texto, false, bitmap)
+                adapter.agregarMensaje(mensajeBot)
+                hablar(texto)
+                binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+                enviandoMensaje = false
+            }
+        } else {
+            val mensajeBot = Mensaje(texto, false, null)
+            adapter.agregarMensaje(mensajeBot)
+            hablar(texto)
+            binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+            enviandoMensaje = false
+        }
     }
+
+
     private fun ofrecerEnviarAlSoporte(pregunta: String) {
         val mensaje = "No tengo respuesta para eso. ¿Quieres que envíe tu pregunta al servicio de atención al cliente?"
         mostrarRespuestaBot(mensaje)
@@ -380,7 +495,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
             .setTitle("¿Enviar pregunta?")
             .setMessage("¿Deseas que enviemos tu pregunta al equipo de soporte?")
             .setPositiveButton("Sí") { _, _ ->
-                enviarPreguntaAlSoporte(pregunta)
+                enviarPreguntaAlSoporte(pregunta, obtenerUsuarioLocal()!!.usuario)
             }
             .setNegativeButton("No") { _, _ ->
                 noEnviarPreguntaAlSoporte(pregunta)
@@ -388,10 +503,78 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
             .show()
     }
 
-    private fun enviarPreguntaAlSoporte(pregunta: String) {
-        val mensaje = "Tu pregunta ha sido enviada al servicio de atención al cliente. Te responderemos pronto."
-        mostrarRespuestaBot(mensaje)
+    private fun obtenerUsuarioLocal(): Usuario? {
+        val prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val id = prefs.getInt("usuario_id", -1)
+        val usuario = prefs.getString("usuario", null)
+        val email = prefs.getString("usuario_email", null)
+        val password = prefs.getString("usuario_password", null)
+        val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
+        val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
+        val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
+        val valoracion = prefs.getInt("usuario_valoracion", 0)
+        val foto = prefs.getInt("usuario_foto", 0) // 🆕 Añadimos la foto del usuario
+
+        return if (id != -1 && usuario != null && email != null && password != null) {
+            val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
+            val longitudDouble = if (longitud != Float.MIN_VALUE) longitud.toDouble() else null
+
+            Usuario(
+                id = id,
+                usuario = usuario,
+                email = email,
+                password = password,
+                contadorPreguntas = contadorPreguntas,
+                latitud = latitudDouble,
+                longitud = longitudDouble,
+                valoracion = valoracion,
+                foto = foto // 🆕 Añadimos la foto al objeto Usuario
+            )
+        } else {
+            null
+        }
     }
+
+    private fun enviarPreguntaAlSoporte(pregunta: String, usuarioNombre: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        // Obtener fecha actual en formato ISO o compatible con datetime en MySQL
+        val fechaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        val tarea = Tarea(
+            titulo = "Pregunta de usuario",
+            descripcion = "$pregunta\n\nSolicitada por: $usuarioNombre",
+            fecha_creacion = fechaActual,
+            prioridad = "Media",
+            estado = "Pendiente",
+            id_empleado = null
+        )
+
+        val call = service.guardarTarea(tarea)
+
+        call.enqueue(object : Callback<Tarea> {
+            override fun onResponse(call: Call<Tarea>, response: Response<Tarea>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Pregunta enviada al soporte", Toast.LENGTH_SHORT).show()
+                    mostrarRespuestaBot("Tu pregunta ha sido enviada al servicio de atención al cliente. Te responderemos pronto.")
+                } else {
+                    Toast.makeText(requireContext(), "Error al enviar la pregunta", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Tarea>, t: Throwable) {
+                Log.e("API", "Error al enviar pregunta: ${t.message}")
+                Toast.makeText(requireContext(), "Error de conexión. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 
     private fun noEnviarPreguntaAlSoporte(pregunta: String) {
         val mensaje = "Tu pregunta no ha sido enviada. Espero serle de ayuda pronto, poco a poco aprendo"

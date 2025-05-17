@@ -14,6 +14,6 @@ data class Usuario(
     val latitud: Double?,  // latitud del usuario
     val longitud: Double?,  // longitud del usuario
     val valoracion: Int? = null,
-    var foto: String? = null,
+    var foto: Int?,
     var fotoBitmap: Bitmap? = null // Agregar el Bitmap para la foto
 ) : Parcelable

@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationManager
 import androidx.fragment.app.Fragment
@@ -13,6 +16,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +29,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.dogidog.R
 import com.example.dogidog.adapters.ValoracionAdapter
 import com.example.dogidog.apiServices.ApiService
@@ -51,6 +58,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -117,9 +125,36 @@ class MapsFragment : Fragment() {
 
         // Obtener la localización y actualizar el mapa
         obtenerUsuariosYRecorridosYMostrarEnMapa()
-        val originalBitmap = BitmapFactory.decodeResource(resources, iconResId)
-        val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 80, 80, false)
-        val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
+        // Obtener el usuario local y su foto
+        val usuario = obtenerUsuarioLocal()
+        val emblemaId = usuario?.foto ?: 1 // o el id que corresponda para obtener el emblema
+
+        fun actualizarMarcadorConEmblema(bitmap: Bitmap, latLng: LatLng, bearing: Float) {
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 80, 80, false)
+            val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
+
+            if (myLocationMarker == null) {
+                myLocationMarker = googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .icon(customIcon)
+                        .anchor(0.5f, 0.5f)
+                        .flat(true)
+                        .rotation(bearing)
+                )
+            } else {
+                myLocationMarker!!.position = latLng
+                myLocationMarker!!.rotation = bearing
+                myLocationMarker!!.setIcon(customIcon)
+            }
+        }
+
+
+// Verificación de permisos
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            return@OnMapReadyCallback
+        }
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
@@ -130,40 +165,30 @@ class MapsFragment : Fragment() {
             override fun onLocationResult(result: LocationResult) {
                 val location = result.lastLocation ?: return
                 val latLng = LatLng(location.latitude, location.longitude)
+                val bearing = location.bearing
 
-                if (myLocationMarker == null) {
-                    myLocationMarker = googleMap.addMarker(
-                        MarkerOptions()
-                            .position(latLng)
-                            .icon(customIcon)
-                            .anchor(0.5f, 0.5f)
-                            .flat(true)
-                            .rotation(location.bearing)
-                            .title(null) // Sin título, evita InfoWindow
-                    )
-                } else {
-                    myLocationMarker!!.position = latLng
-                    myLocationMarker!!.rotation = location.bearing
+                // Llamada a tu API para obtener la imagen del emblema del logro
+                obtenerEmblemaLogro(emblemaId) { bitmap ->
+                    // Aquí actualizas el marcador con el bitmap descargado
+                    actualizarMarcadorConEmblema(bitmap, latLng, bearing)
                 }
 
+                // Mover cámara, actualizar coordenadas y distancia (igual que antes)
                 val cameraPosition = CameraPosition.Builder()
                     .target(latLng)
                     .zoom(18f)
                     .tilt(30f)
-                    .bearing(location.bearing)
+                    .bearing(bearing)
                     .build()
 
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 
-                // Actualizar coordenadas en el servidor
                 actualizarCoordenadasUsuario(location.latitude, location.longitude)
 
-                // Calcular la distancia
                 lastLocation?.let {
                     val distance = it.distanceTo(location)
                     totalDistance += distance
                 }
-
                 lastLocation = location
 
                 distanciaTextView?.text = "Distancia recorrida: ${"%.2f".format(totalDistance)} m"
@@ -291,7 +316,7 @@ class MapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        configurarToolbar()
         usuario = obtenerUsuarioLocal()!!;
         fabEndWalk = view.findViewById(R.id.fabEndWalk)
         fabEndWalk.setOnClickListener {
@@ -352,6 +377,7 @@ class MapsFragment : Fragment() {
                                             Toast.makeText(context, "Recorrido iniciado (ID: $idRecorridoActual)", Toast.LENGTH_SHORT).show()
                                         } else {
                                             Toast.makeText(context, "Error al iniciar recorrido", Toast.LENGTH_SHORT).show()
+
                                         }
                                     }
 
@@ -610,9 +636,8 @@ class MapsFragment : Fragment() {
         val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
         val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
         val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
-        val valoracion = prefs.getInt("usuario_valoracion", 0)  // Nuevo campo de valoración
-
-        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Preguntas=$contadorPreguntas, Valoración=$valoracion")
+        val valoracion = prefs.getInt("usuario_valoracion", 0)
+        val foto = prefs.getInt("usuario_foto", 0) // 🆕 Añadimos la foto del usuario
 
         return if (id != -1 && usuario != null && email != null && password != null) {
             val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
@@ -626,10 +651,10 @@ class MapsFragment : Fragment() {
                 contadorPreguntas = contadorPreguntas,
                 latitud = latitudDouble,
                 longitud = longitudDouble,
-                valoracion = valoracion  // Agregar la valoración al objeto Usuario
+                valoracion = valoracion,
+                foto = foto // 🆕 Añadimos la foto al objeto Usuario
             )
         } else {
-            Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null
         }
     }
@@ -719,6 +744,8 @@ class MapsFragment : Fragment() {
         handler.post(runnable) // Empieza a actualizar usuarios cada 5 minutos
     }
 
+    private val cacheEmblemas = mutableMapOf<Int, Bitmap>()
+
     fun obtenerUsuariosYRecorridosYMostrarEnMapa() {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.0.26:8080/dogidog/")
@@ -727,77 +754,95 @@ class MapsFragment : Fragment() {
 
         val service = retrofit.create(ApiService::class.java)
 
-        // Limpiar marcadores existentes
         googleMapGlobal?.clear()
 
-        // Obtener recorridos activos (ya incluyen usuario y mascota)
         service.obtenerRecorridosActivos().enqueue(object : Callback<List<Recorrido>> {
             override fun onResponse(call: Call<List<Recorrido>>, response: Response<List<Recorrido>>) {
                 if (response.isSuccessful) {
                     val recorridos = response.body() ?: return
                     Log.d("Recorridos", "Recorridos obtenidos: $recorridos")
 
-                    for (recorrido in recorridos) {
-                        val usuario = recorrido.mascota?.usuario
-                        val mascota = recorrido.mascota
+                    // Extraer IDs de usuarios únicos para precargar imágenes
+                    val idsUsuarios = recorridos.mapNotNull { it.mascota?.usuario?.id }
+                        .distinct()
+                        .filter { it != obtenerUsuarioLocal()?.id }
 
-                        if (usuario?.latitud != null && usuario.longitud != null && usuario.id != obtenerUsuarioLocal()!!.id) {
-                            val latLng = LatLng(usuario.latitud, usuario.longitud)
-                            val originalBitmap = BitmapFactory.decodeResource(resources, R.drawable.bordercollie)
-                            val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 80, 80, false)
-                            val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
-
-                            val marker = googleMapGlobal?.addMarker(
-                                MarkerOptions()
-                                    .position(latLng)
-                                    .title(usuario.usuario)
-                                    .icon(customIcon)
-                            )
-
-                            marker?.tag = recorrido
-                        }
-                    }
-
-                    googleMapGlobal?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-                        override fun getInfoWindow(marker: Marker): View? = null
-
-                        override fun getInfoContents(marker: Marker): View {
-                            val view = layoutInflater.inflate(R.layout.info_window, null)
-                            val recorrido = marker.tag as? Recorrido ?: return view
+                    precargarEmblemas(idsUsuarios) {
+                        // Después de precargar, añadir marcadores
+                        for (recorrido in recorridos) {
+                            val usuario = recorrido.mascota?.usuario
                             val mascota = recorrido.mascota
-                            val usuario = mascota?.usuario
 
-                            view.findViewById<TextView>(R.id.tvUsername).text = "${usuario?.usuario} 🐾"
-                            view.findViewById<TextView>(R.id.tvWalkingWith).text = "Paseando con ${mascota?.nombre}"
-                            view.findViewById<ImageView>(R.id.ivPet).setImageResource(R.drawable.bordercollie)
-                            view.findViewById<ImageView>(R.id.ivUserProfile).setImageResource(R.drawable.bordercollie)
-                            view.findViewById<TextView>(R.id.tvPetName).text = mascota.nombre
-                            view.findViewById<TextView>(R.id.tvPetBreed).text = mascota.raza.nombre
-                            // Estrellas (puedes adaptar según valoraciones reales)
+                            if (usuario?.latitud != null && usuario.longitud != null && usuario.id != obtenerUsuarioLocal()?.id) {
+                                val latLng = LatLng(usuario.latitud, usuario.longitud)
 
+                                val bitmap = cacheEmblemas[usuario.id]
+                                val iconBitmap = if (bitmap != null)
+                                    Bitmap.createScaledBitmap(bitmap, 80, 80, false)
+                                else
+                                    BitmapFactory.decodeResource(resources, R.drawable.bordercollie)
 
+                                val customIcon = BitmapDescriptorFactory.fromBitmap(iconBitmap)
 
-                            var valoracion: Int = usuario?.valoracion ?: 0
-
-
-                            val stars = listOf(
-                                view.findViewById<ImageView>(R.id.star1),
-                                view.findViewById<ImageView>(R.id.star2),
-                                view.findViewById<ImageView>(R.id.star3),
-                                view.findViewById<ImageView>(R.id.star4),
-                                view.findViewById<ImageView>(R.id.star5)
-                            )
-
-                            for (i in stars.indices) {
-                                stars[i].setImageResource(
-                                    if (i < valoracion) R.drawable.star_filled else R.drawable.star_empty
+                                val marker = googleMapGlobal?.addMarker(
+                                    MarkerOptions()
+                                        .position(latLng)
+                                        .title(usuario.usuario)
+                                        .icon(customIcon)
                                 )
+
+                                marker?.tag = recorrido
                             }
-
-                            return view
                         }
-                    })
 
+                        // Asignar InfoWindowAdapter solo UNA vez, aquí
+                        googleMapGlobal?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+                            override fun getInfoWindow(marker: Marker): View? = null
+
+                            override fun getInfoContents(marker: Marker): View {
+                                val view = layoutInflater.inflate(R.layout.info_window, null)
+                                val recorrido = marker.tag as? Recorrido ?: return view
+                                val mascota = recorrido.mascota
+                                val usuario = mascota?.usuario
+
+                                view.findViewById<TextView>(R.id.tvUsername).text = "${usuario?.usuario} 🐾"
+                                view.findViewById<TextView>(R.id.tvWalkingWith).text = "Paseando con ${mascota?.nombre}"
+                                view.findViewById<TextView>(R.id.tvPetName).text = mascota?.nombre ?: ""
+                                view.findViewById<TextView>(R.id.tvPetBreed).text = mascota?.raza?.nombre ?: ""
+
+                                val ivPet = view.findViewById<ImageView>(R.id.ivPet)
+
+                                // Asignar imagen mascota (puedes poner una función para descargar/precargar también)
+                                ivPet.setImageResource(R.drawable.bordercollie)
+
+                                // Asignar imagen usuario desde cache o default
+                                val bitmapUser = usuario?.id?.let { cacheEmblemas[it] }
+                                if (bitmapUser != null) {
+                                    ivPet.setImageBitmap(bitmapUser)
+                                } else {
+                                    ivPet.setImageResource(R.drawable.bordercollie)
+                                }
+
+                                val valoracion: Int = usuario?.valoracion ?: 0
+
+                                val stars = listOf(
+                                    view.findViewById<ImageView>(R.id.star1),
+                                    view.findViewById<ImageView>(R.id.star2),
+                                    view.findViewById<ImageView>(R.id.star3),
+                                    view.findViewById<ImageView>(R.id.star4),
+                                    view.findViewById<ImageView>(R.id.star5)
+                                )
+
+                                for (i in stars.indices) {
+                                    stars[i].setImageResource(
+                                        if (i < valoracion) R.drawable.star_filled else R.drawable.star_empty
+                                    )
+                                }
+
+                                return view
+                            }
+                        })
+                    }
                 } else {
                     Toast.makeText(requireContext(), "Error al obtener recorridos", Toast.LENGTH_SHORT).show()
                 }
@@ -809,7 +854,119 @@ class MapsFragment : Fragment() {
         })
     }
 
+    // Función para precargar emblemas en cache
+    private fun precargarEmblemas(ids: List<Int>, onComplete: () -> Unit) {
+        if (ids.isEmpty()) {
+            onComplete()
+            return
+        }
+        var count = 0
+        for (id in ids) {
+            obtenerEmblemaLogro(id) { bitmap ->
+                cacheEmblemas[id] = bitmap
+                count++
+                if (count == ids.size) {
+                    onComplete()
+                }
+            }
+        }
+    }
 
 
+    private fun obtenerEmblemaLogro(id: Int, onResult: (Bitmap) -> Unit) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+        service.obtenerEmblemaLogro(id).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    response.body()?.byteStream()?.let { inputStream ->
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        onResult(bitmap)  // Devolvemos el bitmap al callback
+                    }
+                } else {
+                    Log.e("CargarEmblema", "Error al obtener el emblema")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("CargarEmblema", "Error en la conexión: ${t.message}")
+            }
+        })
+    }
+
+    val cacheImagenes = mutableMapOf<Int, Bitmap>()
+
+    fun precargarImagenes(recorridos: List<Recorrido>, onComplete: () -> Unit) {
+        val ids = recorridos.mapNotNull { it.mascota?.usuario?.id }.distinct()
+        var descargados = 0
+
+        if (ids.isEmpty()) {
+            onComplete()
+            return
+        }
+
+        for (id in ids) {
+            obtenerEmblemaLogro(id) { bitmap ->
+                cacheImagenes[id] = bitmap
+                descargados++
+                if (descargados == ids.size) {
+                    onComplete()
+                }
+            }
+        }
+    }
+    private fun configurarToolbar() {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+
+
+            // Crear el LinearLayout para contener el TextView y la ImageView
+            val linearLayout = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL // Centrar los elementos verticalmente
+            }
+
+            // Crear el TextView con el nombre "Dogibot"
+            val titleTextView = TextView(requireContext()).apply {
+                text = "Mapa de paseos"
+                setTextColor(Color.WHITE) // Establecer el color blanco
+                setTypeface(null, Typeface.BOLD) // Poner el texto en negrita
+
+                // Obtener la altura de la ActionBar (Toolbar)
+                val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+
+                // Ajustar el tamaño del texto proporcionalmente
+                val textSize = (actionBarHeight * 0.5f).toFloat() // El tamaño del texto será el 50% de la altura
+                this.textSize = textSize / resources.displayMetrics.density // Convertir a SP
+            }
+
+            // Crear la ImageView con la imagen de Dogibot
+            val dogibotImageView = ImageView(requireContext()).apply {
+                setImageResource(R.drawable.place_24)
+                setColorFilter(Color.WHITE)
+                layoutParams = LinearLayout.LayoutParams(
+                    resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material),
+                    resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+                ).apply {
+                    marginEnd = 8 // Ajustar el espacio entre la imagen y el texto
+                }
+            }
+
+            // Agregar la imagen y el texto al LinearLayout
+            linearLayout.addView(dogibotImageView)
+            linearLayout.addView(titleTextView)
+
+            // Establecer el LinearLayout como la vista personalizada de la ActionBar
+            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+            customView = linearLayout
+
+            // Cambiar el fondo de la ActionBar (Toolbar)
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+        }
+    }
 }
 

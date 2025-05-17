@@ -62,7 +62,15 @@ class LogrosAdapter : RecyclerView.Adapter<LogrosAdapter.LogroViewHolder>() {
     }
 
     inner class LogroViewHolder(private val binding: ItemLogroBinding) : RecyclerView.ViewHolder(binding.root) {
+
+
         fun bind(logro: Logro, estaDesbloqueado: Boolean, fechaDesbloqueo: String) {
+
+            if (logro.emblemaBitmap != null) {
+                binding.imgLogro.setImageBitmap(logro.emblemaBitmap)
+            } else {
+                binding.imgLogro.setImageResource(R.drawable.bordercollie) // imagen por defecto
+            }
             if (estaDesbloqueado) {
                 binding.txtTituloLogro.text = logro.titulo
                 binding.txtDescripcionLogro.text = logro.descripcion
@@ -76,6 +84,8 @@ class LogrosAdapter : RecyclerView.Adapter<LogrosAdapter.LogroViewHolder>() {
                 binding.txtTituloLogro.setTextColor(Color.GRAY)  // Texto gris
                 binding.imgLogro.setColorFilter(Color.GRAY)
             }
+
+
 
             // Si no está desbloqueado, podemos poner un fondo gris o similar
             binding.root.setBackgroundColor(if (estaDesbloqueado) Color.WHITE else Color.LTGRAY)

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.dogidog.dataModels.Mascota
 
-class PetSelectionDialogFragment(
+class PetSelectionDialogFragment (
     private val mascotas: List<Mascota>,
     private val onPetSelected: (Mascota) -> Unit
 ) : DialogFragment() {

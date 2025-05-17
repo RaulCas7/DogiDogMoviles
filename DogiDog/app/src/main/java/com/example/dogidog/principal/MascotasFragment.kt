@@ -265,9 +265,8 @@ class MascotasFragment : Fragment() {
         val contadorPreguntas = prefs.getInt("usuario_preguntas", 0)
         val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
         val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
-        val valoracion = prefs.getInt("usuario_valoracion", 0)  // Nuevo campo de valoración
-
-        Log.d("SharedPreferences", "Recuperando usuario: ID=$id, Usuario=$usuario, Email=$email, Preguntas=$contadorPreguntas, Valoración=$valoracion")
+        val valoracion = prefs.getInt("usuario_valoracion", 0)
+        val foto = prefs.getInt("usuario_foto", 0) // 🆕 Añadimos la foto del usuario
 
         return if (id != -1 && usuario != null && email != null && password != null) {
             val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
@@ -281,10 +280,10 @@ class MascotasFragment : Fragment() {
                 contadorPreguntas = contadorPreguntas,
                 latitud = latitudDouble,
                 longitud = longitudDouble,
-                valoracion = valoracion  // Agregar la valoración al objeto Usuario
+                valoracion = valoracion,
+                foto = foto // 🆕 Añadimos la foto al objeto Usuario
             )
         } else {
-            Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null
         }
     }
@@ -354,30 +353,32 @@ class MascotasFragment : Fragment() {
     }
 
     private fun configurarToolbar() {
-        // Acceder al ActionBar de la Activity que contiene este Fragment
-        (activity as AppCompatActivity).supportActionBar?.apply {
-            // Crear el TextView personalizado
-            val titleTextView = TextView(requireContext()).apply {
-                text = "Mascotas"
-                setTextColor(Color.WHITE) // Establecer el color blanco
-                setTypeface(null, Typeface.BOLD) // Poner el texto en negrita
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar ?: return
 
-                // Obtener la altura de la ActionBar (Toolbar)
-                val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
-
-                // Ajustar el tamaño del texto proporcionalmente
-                val textSize = (actionBarHeight * 0.5f).toFloat() // El tamaño del texto será el 50% de la altura
-                this.textSize = textSize / resources.displayMetrics.density // Convertir a SP
-            }
-
-            // Establecer el título con el TextView personalizado
-            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-            customView = titleTextView
-
-            // Cambiar el fondo de la ActionBar (Toolbar)
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+        // Limpiar configuración previa
+        actionBar.displayOptions = 0
+        actionBar.customView?.let {
+            (it.parent as? ViewGroup)?.removeView(it)
         }
+        actionBar.setDisplayShowTitleEnabled(false) // Para evitar mostrar título normal junto al customView
+
+        // Crear nuevo TextView personalizado
+        val titleTextView = TextView(requireContext()).apply {
+            text = "Mascotas"
+            setTextColor(Color.WHITE)
+            setTypeface(null, Typeface.BOLD)
+            val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+            val textSize = (actionBarHeight * 0.5f).toFloat()
+            this.textSize = textSize / resources.displayMetrics.density
+        }
+
+        actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        actionBar.customView = titleTextView
+
+        actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
     }
+
+
 
     private fun configurarToolbarEliminar() {
         // Acceder al ActionBar de la Activity que contiene este Fragment

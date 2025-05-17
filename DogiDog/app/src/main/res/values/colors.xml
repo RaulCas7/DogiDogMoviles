@@ -8,4 +8,13 @@
     <color name="verde">#4CAF50</color>
     <color name="rojo">#F44336</color>
     <color name="amarillo">#FFEB3B</color>
+
+
+
+        <color name="primario_noche">#90CAF9</color> <!-- Azul claro pero más suave para modo noche -->
+        <color name="primario_oscuro_noche">#1565C0</color> <!-- Azul oscuro para ActionBar noche -->
+        <color name="texto_claro">#E3F2FD</color> <!-- Texto blanco/azulado suave para modo noche -->
+        <color name="fondo_noche">#121212</color> <!-- Fondo negro oscuro -->
+        <color name="azul_secundario_noche">#64B5F6</color> <!-- Azul secundario igual que claro, para mantener uniformidad -->
+
 </resources>

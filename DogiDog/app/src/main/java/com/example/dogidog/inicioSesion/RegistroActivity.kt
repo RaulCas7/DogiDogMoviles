@@ -51,7 +51,7 @@ class RegistroActivity : AppCompatActivity() {
 
             val contraMD5 = convertirAMD5(contra)
 
-            val nuevoUsuario = Usuario(-1,usuario, email, contraMD5, 0, null, null) // contadorPreguntas = 0 por defecto
+            val nuevoUsuario = Usuario(-1,usuario, email, contraMD5, 0, null, null,0,0) // contadorPreguntas = 0 por defecto
 
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del backend

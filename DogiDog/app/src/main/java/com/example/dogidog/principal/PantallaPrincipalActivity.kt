@@ -23,6 +23,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 class PantallaPrincipalActivity : AppCompatActivity() {
     lateinit var binding: ActivityPantallaPrincipalBinding
     lateinit var mapsFragment: MapsFragment
@@ -44,6 +45,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         seleccionarToolbar()
         // Cargar las notificaciones
         cargarNotificaciones()
+        
     }
 
     private fun initComponents() {
@@ -194,7 +196,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         return if (id != -1 && usuario != null && email != null && password != null) {
             val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
             val longitudDouble = if (longitud != Float.MIN_VALUE) longitud.toDouble() else null
-            Usuario(id, usuario, email, password, 0, latitudDouble, longitudDouble)
+            Usuario(id, usuario, email, password, 0, latitudDouble, longitudDouble,0,0)
         } else {
             Log.w("SharedPreferences", "No se encontró un usuario válido en SharedPreferences")
             null

@@ -10,6 +10,7 @@ import com.example.dogidog.dataModels.PesoMascota
 import com.example.dogidog.dataModels.Pregunta
 import com.example.dogidog.dataModels.Raza
 import com.example.dogidog.dataModels.Recorrido
+import com.example.dogidog.dataModels.Tarea
 import com.example.dogidog.dataModels.Usuario
 import com.example.dogidog.dataModels.UsuariosLogro
 import com.example.dogidog.dataModels.Valoracion
@@ -129,6 +130,12 @@ interface ApiService {
     @POST("recorridos")
     fun guardarRecorrido(@Body recorrido: Recorrido): Call<Int>
 
+    @PUT("notificaciones/{id}")
+    fun actualizarNotificacion(
+        @Path("id") id: Int,
+        @Body notificacion: Notificacion
+    ): Call<Notificacion>
+
     @PUT("recorridos/{id}")
     fun actualizarRecorrido(
         @Path("id") id: Int,
@@ -140,4 +147,10 @@ interface ApiService {
 
     @POST("valoraciones")
     fun enviarValoracion(@Body valoracion: Valoracion): Call<Valoracion>
+
+    @DELETE("notificaciones/{id}")
+    fun eliminarNotificacion(@Path("id") id: Int): Call<Void>
+
+    @POST("tareas")
+    fun guardarTarea(@Body tarea: Tarea): Call<Tarea>
 }

@@ -1,7 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.DogiDog" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Tema base para día y noche -->
+    <style name="Base.Theme.DogiDog" parent="Theme.Material3.DayNight">
+        <!-- Color primario: un azul oscuro para modo noche -->
+        <item name="colorPrimary">@color/primario_noche</item>
+        <!-- Color oscuro para la barra de estado y ActionBar -->
+        <item name="colorPrimaryDark">@color/primario_oscuro_noche</item>
+        <!-- Color del texto principal, claro para que contraste con fondo oscuro -->
+        <item name="android:textColorPrimary">@color/texto_claro</item>
+        <!-- Color de fondo de la app (dark background) -->
+        <item name="android:windowBackground">#342F35</item>
+        <!-- Color para elementos secundarios (por ejemplo iconos) -->
+        <item name="colorSecondary">@color/azul_secundario_noche</item>
     </style>
+
+    <style name="Theme.DogiDog" parent="Base.Theme.DogiDog" />
 </resources>
