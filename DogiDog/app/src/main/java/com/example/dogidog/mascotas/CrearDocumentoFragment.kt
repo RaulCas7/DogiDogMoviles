@@ -110,36 +110,52 @@ class CrearDocumentoFragment : Fragment() {
     }
 
     private fun guardarDocumento() {
-        val tipo = binding.spinnerTipoDocumento.selectedItem.toString()
-        val descripcion = binding.etDescripcion.text.toString()
+        val tipo = binding.spinnerTipoDocumento.selectedItem.toString().trim()
+        val descripcion = binding.etDescripcion.text.toString().trim()
+        val fechaTexto = binding.etFecha.text.toString().trim()
         val archivoUri = archivoSeleccionadoUri
 
-        val fechaFormateada = LocalDate.parse(
-            binding.etFecha.text.toString(),
-            DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        ).toString()
+        // Validar campos vacíos
+        if (tipo.isEmpty() || tipo == "Selecciona un tipo") {  // Ajusta según el texto del primer item del spinner
+            Toast.makeText(requireContext(), "Por favor selecciona un tipo de documento", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (descripcion.isEmpty()) {
+            Toast.makeText(requireContext(), "La descripción no puede estar vacía", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (fechaTexto.isEmpty()) {
+            Toast.makeText(requireContext(), "Por favor ingresa una fecha válida", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validar que la fecha tenga el formato correcto (dd/MM/yyyy)
+        val fechaFormateada = try {
+            LocalDate.parse(fechaTexto, DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString()
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Fecha inválida. Usa formato dd/MM/yyyy", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val documentacionJson = DocumentacionCrear(
             mascota = mascota,
             tipo = tipo,
             fecha = fechaFormateada,
             descripcion = descripcion,
-            archivo = archivoUri?.lastPathSegment ?: "", // Si no hay archivo, ponemos una cadena vacía
+            archivo = archivoUri?.lastPathSegment ?: "",
             creadoEn = LocalDateTime.now().toString()
         )
 
-        // Convertir el objeto DocumentacionCrear a JSON con Gson
+        // Código para enviar a la API sigue igual...
         val gson = Gson()
         val documentacionJsonString = gson.toJson(documentacionJson)
 
-        // Crear RequestBody con el JSON
         val documentacionRequestBody = RequestBody.create(
             "application/json".toMediaTypeOrNull(), documentacionJsonString
         )
 
-        // Configurar Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -149,13 +165,11 @@ class CrearDocumentoFragment : Fragment() {
             override fun onResponse(call: Call<DocumentacionCrear>, response: Response<DocumentacionCrear>) {
                 if (response.isSuccessful) {
                     val documentoCreado = response.body()
-                    val idDocumento = documentoCreado?.id  // Obtener el ID del documento recién creado
+                    val idDocumento = documentoCreado?.id
                     if (idDocumento != null) {
-                        // Si hay archivo, actualizamos con el archivo
                         archivoUri?.let {
                             actualizarArchivoDocumentacion(idDocumento, it)
                         } ?: run {
-                            // Si no hay archivo, podemos cerrar el fragmento directamente
                             Toast.makeText(requireContext(), "Documento creado sin archivo", Toast.LENGTH_SHORT).show()
                             navigateBackToPreviousFragment()
                         }
