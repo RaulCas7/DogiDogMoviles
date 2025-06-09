@@ -58,7 +58,7 @@ class DocumentacionFragment : Fragment() {
         mascota = arguments?.getParcelable("mascota")!!
         configurarToolbar(mascota)
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(ApiService::class.java)

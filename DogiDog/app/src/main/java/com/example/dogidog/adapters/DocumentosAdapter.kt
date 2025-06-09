@@ -179,7 +179,7 @@ class DocumentosAdapter(
     private fun descargarArchivo(idDocumento: Int) {
         // Configuramos Retrofit para descargar el archivo
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte las respuestas
             .build()
 
@@ -338,7 +338,7 @@ class DocumentosAdapter(
 
     private fun eliminarDocumento(id: Int, position: Int) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

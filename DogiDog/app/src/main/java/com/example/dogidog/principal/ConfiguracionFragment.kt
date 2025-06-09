@@ -339,7 +339,7 @@ class ConfiguracionFragment : Fragment() {
             putInt("usuario_id", usuario.id)
             putString("usuario", usuario.usuario)
             putString("usuario_email", usuario.email)
-            putString("usuario_password", usuario.password)
+            putString("usuario_password", usuario.password ?: "")
             putInt("usuario_preguntas", usuario.contadorPreguntas)
 
             usuario.latitud?.let {
@@ -376,7 +376,7 @@ class ConfiguracionFragment : Fragment() {
     private fun actualizarUsuarioAPI(usuarioEditar: Usuario) {
         // Configurar Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -414,7 +414,7 @@ class ConfiguracionFragment : Fragment() {
     private fun eliminarUsuarioAPI(idUsuario: Int) {
         // Configurar Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Usa la IP de tu servidor local
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Usa la IP de tu servidor local
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -501,7 +501,7 @@ class ConfiguracionFragment : Fragment() {
 
     private fun actualizarImagenPerfil(usuario: Usuario, nuevaFoto: Int) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -531,7 +531,7 @@ class ConfiguracionFragment : Fragment() {
 
     private fun obtenerLogrosDisponibles(onComplete: () -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -581,7 +581,7 @@ class ConfiguracionFragment : Fragment() {
         val usuarioId = obtenerUsuarioLocal()?.id ?: return
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -630,7 +630,7 @@ class ConfiguracionFragment : Fragment() {
 
     private fun obtenerEmblemaLogro(id: Int, onResult: (Bitmap) -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

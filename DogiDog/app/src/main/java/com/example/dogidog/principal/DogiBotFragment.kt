@@ -183,7 +183,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private fun obtenerEmblemaLogro(idLogro: Int, onBitmapLoaded: (Bitmap?) -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -405,7 +405,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // ✅ Esto está correcto
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // ✅ Esto está correcto
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -537,7 +537,7 @@ class DogibotFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private fun enviarPreguntaAlSoporte(pregunta: String, usuarioNombre: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

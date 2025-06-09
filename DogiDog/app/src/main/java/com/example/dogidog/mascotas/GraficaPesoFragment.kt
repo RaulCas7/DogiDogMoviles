@@ -68,7 +68,7 @@ class GraficaPesoFragment : Fragment() {
 
     private fun obtenerPesosMascota(mascotaId: Int) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Reemplaza por tu IP real
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Reemplaza por tu IP real
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

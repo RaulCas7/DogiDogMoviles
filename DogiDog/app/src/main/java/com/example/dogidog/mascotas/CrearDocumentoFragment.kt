@@ -47,10 +47,16 @@ class CrearDocumentoFragment : Fragment() {
 
     private val selectorArchivoLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                archivoSeleccionadoUri = it
-                val nombreArchivo = obtenerNombreArchivoDesdeUri(it)
-                binding.tvNombreArchivo.text = nombreArchivo
+            try {
+                uri?.let {
+                    archivoSeleccionadoUri = it
+                    Log.d("CrearDocumento", "Archivo seleccionado URI: $it")
+                    val nombreArchivo = obtenerNombreArchivoDesdeUri(it)
+                    binding.tvNombreArchivo.text = nombreArchivo
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Error al seleccionar archivo: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -133,7 +139,7 @@ class CrearDocumentoFragment : Fragment() {
 
         // Configurar Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -176,7 +182,7 @@ class CrearDocumentoFragment : Fragment() {
 
             // Configurar Retrofit para la segunda llamada PUT
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
+                .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
@@ -228,7 +234,6 @@ class CrearDocumentoFragment : Fragment() {
 
     private fun obtenerNombreArchivoDesdeUri(uri: Uri): String {
         var nombreArchivo = "Archivo seleccionado"
-        // Intentamos obtener el nombre del archivo usando ContentResolver
         try {
             val cursor = context?.contentResolver?.query(uri, null, null, null, null)
             cursor?.use {

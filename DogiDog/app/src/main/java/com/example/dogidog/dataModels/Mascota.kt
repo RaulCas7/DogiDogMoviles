@@ -3,6 +3,7 @@ package com.example.dogidog.dataModels
 
 import android.graphics.Bitmap
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 
@@ -23,6 +24,7 @@ data class Mascota(
     val metrosRecorridos: Long?,
     val pienso: String?,
     val microchip: String?,
-    var fotoBitmap: Bitmap? = null // Agregar el Bitmap para la foto
+    @IgnoredOnParcel
+    var fotoBitmap: Bitmap? = null // Ignorar este campo en parcelación
 )
  : Parcelable

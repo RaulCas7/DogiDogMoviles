@@ -108,7 +108,7 @@ class AnadirMascotaFragment : Fragment() {
 
     private fun configurarSpinnerRazas() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -217,7 +217,7 @@ class AnadirMascotaFragment : Fragment() {
 
     private fun guardarMascota(mascota: MascotaCrear) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -364,7 +364,7 @@ class AnadirMascotaFragment : Fragment() {
 
         // Llamada Retrofit
         val service = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)

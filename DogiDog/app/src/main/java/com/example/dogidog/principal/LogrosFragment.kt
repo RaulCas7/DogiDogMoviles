@@ -70,7 +70,7 @@ class LogrosFragment : Fragment() {
 
     private fun obtenerLogrosDisponibles() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -107,7 +107,7 @@ class LogrosFragment : Fragment() {
         val usuarioId = obtenerUsuarioLocal()?.id ?: return // Obtener el ID del usuario logueado
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -203,7 +203,7 @@ class LogrosFragment : Fragment() {
     }
     private fun obtenerEmblemaLogro(id: Int, onResult: (Bitmap) -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

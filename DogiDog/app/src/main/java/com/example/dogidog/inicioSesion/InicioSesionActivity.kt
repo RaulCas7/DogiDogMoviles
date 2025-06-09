@@ -116,7 +116,7 @@ class InicioSesionActivity : AppCompatActivity() {
         // Lógica para verificar las credenciales del usuario
         // En este caso, puedes verificar las credenciales contra una API o base de datos local.
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de usar la URL correcta
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Asegúrate de usar la URL correcta
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -145,7 +145,7 @@ class InicioSesionActivity : AppCompatActivity() {
 
     private fun verificarUsuarioEnAPI(email: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -178,7 +178,7 @@ class InicioSesionActivity : AppCompatActivity() {
             prefs.putInt("usuario_id", usuario.id)
             prefs.putString("usuario", usuario.usuario)
             prefs.putString("usuario_email", usuario.email)
-            prefs.putString("usuario_password", usuario.password)
+            prefs.putString("usuario_password", usuario.password ?: "")
             prefs.putInt("usuario_preguntas", usuario.contadorPreguntas)
 
             usuario.latitud?.let {
@@ -191,6 +191,7 @@ class InicioSesionActivity : AppCompatActivity() {
 
             // Guardamos la valoración (0 si es null)
             prefs.putInt("usuario_valoracion", (usuario.valoracion ?: 0) as Int)
+            prefs.putInt("usuario_foto", usuario.foto ?:1)
 
             prefs.putString("provider", "LOCAL")
             prefs.commit()

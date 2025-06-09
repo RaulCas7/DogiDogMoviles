@@ -54,7 +54,7 @@ class RegistroActivity : AppCompatActivity() {
             val nuevoUsuario = Usuario(-1,usuario, email, contraMD5, 0, null, null,0,0) // contadorPreguntas = 0 por defecto
 
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del backend
+                .baseUrl("http://192.168.170.200:8080/dogidog/") // Dirección del backend
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 

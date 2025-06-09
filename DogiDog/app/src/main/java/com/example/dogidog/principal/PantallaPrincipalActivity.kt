@@ -123,7 +123,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     // Cargar las notificaciones desde la API
     private fun cargarNotificaciones() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
             .build()
 

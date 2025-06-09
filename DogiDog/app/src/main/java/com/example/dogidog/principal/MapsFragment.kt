@@ -260,7 +260,7 @@ class MapsFragment : Fragment() {
 
     private fun enviarValoracion(usuarioActual: Usuario, usuarioValorado: Usuario, estrellas: Int, descripcion: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -336,7 +336,7 @@ class MapsFragment : Fragment() {
 
         // Configuración de Retrofit y la API
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // URL base
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // URL base
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -571,7 +571,7 @@ class MapsFragment : Fragment() {
         val usuarioId = obtenerUsuarioLocal()?.id ?: return
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de que esta URL es la correcta
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Asegúrate de que esta URL es la correcta
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -599,7 +599,7 @@ class MapsFragment : Fragment() {
         val usuarioId = obtenerUsuarioLocal()?.id ?: return
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -637,9 +637,9 @@ class MapsFragment : Fragment() {
         val latitud = prefs.getFloat("usuario_latitud", Float.MIN_VALUE)
         val longitud = prefs.getFloat("usuario_longitud", Float.MIN_VALUE)
         val valoracion = prefs.getInt("usuario_valoracion", 0)
-        val foto = prefs.getInt("usuario_foto", 0) // 🆕 Añadimos la foto del usuario
+        val foto = prefs.getInt("usuario_foto", 0)
 
-        return if (id != -1 && usuario != null && email != null && password != null) {
+        return if (id != -1 && usuario != null && email != null) { // Quitamos la comprobación de password
             val latitudDouble = if (latitud != Float.MIN_VALUE) latitud.toDouble() else null
             val longitudDouble = if (longitud != Float.MIN_VALUE) longitud.toDouble() else null
 
@@ -647,12 +647,12 @@ class MapsFragment : Fragment() {
                 id = id,
                 usuario = usuario,
                 email = email,
-                password = password,
+                password = password ?: "", // Si no hay, dejamos string vacío
                 contadorPreguntas = contadorPreguntas,
                 latitud = latitudDouble,
                 longitud = longitudDouble,
                 valoracion = valoracion,
-                foto = foto // 🆕 Añadimos la foto al objeto Usuario
+                foto = foto
             )
         } else {
             null
@@ -660,7 +660,7 @@ class MapsFragment : Fragment() {
     }
     fun obtenerValoracionesDelUsuario(usuarioId: Int, callback: (List<Valoracion>) -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")  // URL de tu API
+            .baseUrl("http://192.168.170.200:8080/dogidog/")  // URL de tu API
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -748,7 +748,7 @@ class MapsFragment : Fragment() {
 
     fun obtenerUsuariosYRecorridosYMostrarEnMapa() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -875,7 +875,7 @@ class MapsFragment : Fragment() {
 
     private fun obtenerEmblemaLogro(id: Int, onResult: (Bitmap) -> Unit) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/")
+            .baseUrl("http://192.168.170.200:8080/dogidog/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

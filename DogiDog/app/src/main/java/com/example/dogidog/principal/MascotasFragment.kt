@@ -111,7 +111,7 @@ class MascotasFragment : Fragment() {
 
     private fun eliminarMascota(mascota: Mascota) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
             .build()
 
@@ -183,7 +183,7 @@ class MascotasFragment : Fragment() {
 
     private fun cargarMascotas() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
             .build()
 
@@ -226,7 +226,7 @@ class MascotasFragment : Fragment() {
 
     private fun cargarFotoMascota(mascota: Mascota) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Dirección del servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Dirección del servidor
             .addConverterFactory(GsonConverterFactory.create()) // Convierte JSON en objetos
             .build()
 
@@ -353,21 +353,32 @@ class MascotasFragment : Fragment() {
     }
 
     private fun configurarToolbar() {
-        val actionBar = (activity as? AppCompatActivity)?.supportActionBar ?: return
+        val activityCompat = activity as? AppCompatActivity ?: return
+        val actionBar = activityCompat.supportActionBar ?: return
 
-        // Limpiar configuración previa
+        // Eliminar íconos y botones anteriores
+        actionBar.setDisplayHomeAsUpEnabled(false)
+        actionBar.setDisplayShowHomeEnabled(false)
+        actionBar.setHomeButtonEnabled(false)
+
+        // Eliminar configuración previa
         actionBar.displayOptions = 0
         actionBar.customView?.let {
             (it.parent as? ViewGroup)?.removeView(it)
         }
-        actionBar.setDisplayShowTitleEnabled(false) // Para evitar mostrar título normal junto al customView
 
-        // Crear nuevo TextView personalizado
+        // Quitar el título estándar
+        actionBar.setDisplayShowTitleEnabled(false)
+
+        // Crear nuevo título personalizado
         val titleTextView = TextView(requireContext()).apply {
             text = "Mascotas"
             setTextColor(Color.WHITE)
             setTypeface(null, Typeface.BOLD)
-            val actionBarHeight = resources.getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_bar_default_height_material)
+
+            val actionBarHeight = resources.getDimensionPixelSize(
+                androidx.appcompat.R.dimen.abc_action_bar_default_height_material
+            )
             val textSize = (actionBarHeight * 0.5f).toFloat()
             this.textSize = textSize / resources.displayMetrics.density
         }
@@ -375,8 +386,12 @@ class MascotasFragment : Fragment() {
         actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         actionBar.customView = titleTextView
 
-        actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario)))
+        actionBar.setBackgroundDrawable(
+            ColorDrawable(ContextCompat.getColor(requireContext(), R.color.primario))
+        )
     }
+
+
 
 
 
@@ -431,11 +446,11 @@ class MascotasFragment : Fragment() {
         menuItem.isVisible = false
         menuItemOptions.isVisible = true
         menuItemDoc.isVisible = false
-        setHasOptionsMenu(true) // Permitir que el fragmento maneje los ítems del menú
     }
     override fun onResume() {
         super.onResume()
         cargarMascotas()
+        configurarToolbar()
     }
 
     private fun irAMascotaPrincipalFragment(mascota: Mascota) {

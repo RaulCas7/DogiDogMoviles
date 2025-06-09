@@ -23,12 +23,13 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class NotificacionesAdapter(
-    //Se queda en mutable para borrar todas
+    // Se queda en mutable para borrar todas
     var listaNotificaciones: MutableList<Notificacion>,
     private val onSelectionModeChanged: (Boolean) -> Unit, // Llamada cuando cambia el modo de selección
     private val onClick: (Notificacion) -> Unit // Llamada cuando se hace clic en una notificación
 ) : RecyclerView.Adapter<NotificacionesAdapter.NotificacionViewHolder>() {
 
+    // Ahora guardamos IDs de notificaciones clickeadas para no depender de posiciones
     private val notificacionesClickeadas = mutableSetOf<Int>()
     private val seleccionadas = mutableSetOf<Notificacion>()
     internal var enModoSeleccion = false
@@ -40,28 +41,20 @@ class NotificacionesAdapter(
         val fechaCreacion: TextView = itemView.findViewById(R.id.txtFechaCreacion)
         val checkSeleccion: CheckBox = itemView.findViewById(R.id.checkSeleccion) // Nuevo checkbox
 
-        fun bind(notificacion: Notificacion) {
+        fun bind(notificacion: Notificacion, position: Int) {
             titulo.text = notificacion.titulo
             descripcion.text = notificacion.mensaje
             val fechaFormateada = formatearFecha(notificacion.fechaCreacion)
             fechaCreacion.text = fechaFormateada
 
-            val estaPulsada = notificacionesClickeadas.contains(adapterPosition)
+            val estaPulsada = notificacionesClickeadas.contains(notificacion.id)
 
             itemView.setBackgroundColor(
                 if (estaPulsada) Color.parseColor("#E0E0E0")  // Gris claro
                 else Color.TRANSPARENT // Fondo normal
             )
 
-
-
-            if (estaPulsada) {
-                imagen.setImageResource(R.drawable.baseline_mark_email_read_24)
-            } else {
-                imagen.setImageResource(R.drawable.baseline_mark_email_unread_24)
-            }
-
-            if(notificacion.leida){
+            if (notificacion.leida) {
                 imagen.setImageResource(R.drawable.baseline_mark_email_read_24)
             } else {
                 imagen.setImageResource(R.drawable.baseline_mark_email_unread_24)
@@ -71,16 +64,13 @@ class NotificacionesAdapter(
             checkSeleccion.isChecked = seleccionadas.contains(notificacion)
 
             itemView.setOnClickListener {
-
                 if (enModoSeleccion) {
                     if (seleccionadas.contains(notificacion)) {
                         seleccionadas.remove(notificacion)
                     } else {
                         seleccionadas.add(notificacion)
                     }
-
-
-                    notifyItemChanged(adapterPosition)
+                    notifyItemChanged(position)
 
                     if (seleccionadas.isEmpty()) {
                         enModoSeleccion = false
@@ -89,24 +79,22 @@ class NotificacionesAdapter(
                     }
                 } else {
                     if (estaPulsada) {
-                        notificacionesClickeadas.remove(adapterPosition)
+                        notificacionesClickeadas.remove(notificacion.id)
                     } else {
-                        notificacionesClickeadas.add(adapterPosition)
+                        notificacionesClickeadas.add(notificacion.id)
                     }
-                    notifyItemChanged(adapterPosition)
+                    notifyItemChanged(position)
                     onClick(notificacion)
                 }
             }
 
             itemView.setOnLongClickListener {
-
                 if (!enModoSeleccion) {
                     enModoSeleccion = true
                     seleccionadas.add(notificacion)
                     onSelectionModeChanged(true)
                     notifyDataSetChanged()
                 }
-
                 true
             }
         }
@@ -118,16 +106,14 @@ class NotificacionesAdapter(
     }
 
     override fun onBindViewHolder(holder: NotificacionViewHolder, position: Int) {
-        holder.bind(listaNotificaciones[position])
+        holder.bind(listaNotificaciones[position], position)
     }
 
     override fun getItemCount() = listaNotificaciones.size
 
     fun actualizarLista(nuevaLista: MutableList<Notificacion>) {
-
         listaNotificaciones.clear()
         listaNotificaciones.addAll(nuevaLista)
-
         notifyDataSetChanged()
     }
 
@@ -136,15 +122,13 @@ class NotificacionesAdapter(
     }
 
     fun eliminarSeleccionadas() {
-        Log.d("ADAPTER", "Intentando eliminar ${seleccionadas.size} notificaciones seleccionadas: $seleccionadas")
-
         if (seleccionadas.isEmpty()) {
             Log.d("ADAPTER", "⚠️ No hay notificaciones seleccionadas para eliminar.")
             return
         }
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Asegúrate de poner tu URL real
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Pon tu URL real
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -166,7 +150,6 @@ class NotificacionesAdapter(
             })
         }
 
-        // Elimina localmente después de disparar las peticiones
         listaNotificaciones.removeAll(seleccionadas)
         seleccionadas.clear()
         enModoSeleccion = false
@@ -174,14 +157,21 @@ class NotificacionesAdapter(
         notifyDataSetChanged()
     }
 
+    fun formatearFecha(fechaCreacion: String?): String {
+        if (fechaCreacion.isNullOrBlank()) {
+            return "" // O algún texto por defecto que quieras mostrar cuando no hay fecha
+        }
 
-    fun formatearFecha(fechaCreacion: String): String {
-        val instant = Instant.parse(fechaCreacion)
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
-            .withZone(ZoneId.systemDefault())
-        return formatter.format(instant)
+        return try {
+            val instant = Instant.parse(fechaCreacion)
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                .withZone(ZoneId.systemDefault())
+            formatter.format(instant)
+        } catch (e: Exception) {
+            "" // Si el formato de fecha es inválido, evitar crash y devolver vacío
+        }
     }
-
 }
+
 
 

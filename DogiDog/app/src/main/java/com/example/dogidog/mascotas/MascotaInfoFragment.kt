@@ -83,8 +83,30 @@ class MascotaInfoFragment : Fragment() {
                     binding.txtProblemaPeso.isVisible = true
                 }
             }
+
             val formatoFecha = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val fechaActual = Date()
+
+            val formatoEntrada = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // formato original
+            val formatoSalida = SimpleDateFormat("dd-MM-yyyy", Locale("es", "ES")) // formato español
+
+            binding.txtFechaVacuna.text = mascota.fechaProximaVacunacion?.let {
+                try {
+                    val fecha = formatoEntrada.parse(it)
+                    if (fecha != null) formatoSalida.format(fecha) else getString(R.string.sinInfo)
+                } catch (e: ParseException) {
+                    getString(R.string.sinInfo)
+                }
+            } ?: getString(R.string.sinInfo)
+
+            binding.txtFechaDesparasitacion.text = mascota.fechaProximaDesparasitacion?.let {
+                try {
+                    val fecha = formatoEntrada.parse(it)
+                    if (fecha != null) formatoSalida.format(fecha) else getString(R.string.sinInfo)
+                } catch (e: ParseException) {
+                    getString(R.string.sinInfo)
+                }
+            } ?: getString(R.string.sinInfo)
 
 // Verificamos y coloreamos la fecha de vacunación
             mascota.fechaProximaVacunacion?.let { fechaStr ->
@@ -154,7 +176,7 @@ class MascotaInfoFragment : Fragment() {
 
         val datePickerListener = { textView: TextView ->
             val listener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                val fecha = "%02d-%02d-%04d".format(dayOfMonth, month + 1, year)
+                val fecha = "%04d-%02d-%02d".format(year, month + 1, dayOfMonth)
                 textView.text = fecha
             }
             DatePickerDialog(
@@ -210,7 +232,7 @@ class MascotaInfoFragment : Fragment() {
         // Aquí usaríamos Retrofit para hacer la petición PUT a la API
         // Configurar Retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.26:8080/dogidog/") // Cambia esta URL por la de tu servidor
+            .baseUrl("http://192.168.170.200:8080/dogidog/") // Cambia esta URL por la de tu servidor
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -276,6 +298,26 @@ class MascotaInfoFragment : Fragment() {
         val formatoFecha = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val fechaActual = Date()
 
+        val formatoEntrada = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // formato original
+        val formatoSalida = SimpleDateFormat("dd-MM-yyyy", Locale("es", "ES")) // formato español
+
+        binding.txtFechaVacuna.text = mascota.fechaProximaVacunacion?.let {
+            try {
+                val fecha = formatoEntrada.parse(it)
+                if (fecha != null) formatoSalida.format(fecha) else getString(R.string.sinInfo)
+            } catch (e: ParseException) {
+                getString(R.string.sinInfo)
+            }
+        } ?: getString(R.string.sinInfo)
+
+        binding.txtFechaDesparasitacion.text = mascota.fechaProximaDesparasitacion?.let {
+            try {
+                val fecha = formatoEntrada.parse(it)
+                if (fecha != null) formatoSalida.format(fecha) else getString(R.string.sinInfo)
+            } catch (e: ParseException) {
+                getString(R.string.sinInfo)
+            }
+        } ?: getString(R.string.sinInfo)
         binding.txtFechaVacuna.setTextColor(ContextCompat.getColor(requireContext(), R.color.primario))
 // Verificamos y coloreamos la fecha de vacunación
         mascota.fechaProximaVacunacion?.let { fechaStr ->
