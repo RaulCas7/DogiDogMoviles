@@ -9,8 +9,7 @@
     <string name="titulo_logros">Logros</string>
     <string name="titulo_dogibot">Dogibot</string>
     <string name="sinInfo">---</string>
-    <string name="api_key">AIzaSyBLhY2MeljvnCLGRfLbc_R24l73oGIaz8U</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="api_key">AIz</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <array name="mascotas"> </array>
     <string name="conexion">http://10.0.2.2:8080/dogidog/</string>
